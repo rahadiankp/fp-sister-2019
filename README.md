@@ -1,6 +1,21 @@
 ## Proyek Akhir Sistem Terdistribusi 2019
 ### Arsitektur
 ![Arsitektur](assets/architecture.png)
+#### Klien
+Node ini adalah player dari game Tic-Tac-Toe
+#### Proxy
+Node ini sebagai jembatan klien ke server game. Node ini bertugas untuk menentukan koneksi klien ke salah satu server yang tersedia. Selain itu, node ini akan mendistribusikan perintah yang dikirimkan oleh klien ke seluruh server. Perintah dari klien tersebut juga akan dikirimkan ke Transactions Manager
+#### Transactions Manager
+Node ini bertugas untuk menyimpan seluruh perintah/instruksi/transaksi yang pernah di-*request* oleh klien dan didistribusikan kepada Server. Format data transaksi yang disimpan adalah `<INDEX_NUM> <INSTRUCTION>`, contohnya:
+```
+1 PLAY userNomerSatu 1
+2 PLAY userNomerDua 1
+3 PUT userNomerSatu 1 1,1 # player userNomerSatu menaruh bidak di board ID 1 di koordinat (1,1)
+4 PUT userNomerDua 1 1,2
+...
+```
+#### Game Master
+Node ini tempat di mana *state* game berada dan proses yang berkaitan dengan jalannya game
 ### Data Consistency Protocol
 #### Replication
 1. Klien mengirimkan perintah/instruksi kepada Server melalui Proxy
