@@ -1,4 +1,8 @@
 ## Proyek Akhir Sistem Terdistribusi 2019
+- Rahadian K. Putra 05111640000006
+- Taufiq Tirtajiwangga 05111640000016
+- Alcredo Simanjuntak 05111640000045
+- Alfian 05111640000073
 ### Arsitektur
 ![Arsitektur](assets/architecture.png)
 #### Klien
