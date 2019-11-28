@@ -3,6 +3,18 @@
 - Taufiq Tirtajiwangga 05111640000016
 - Alcredo Simanjuntak 05111640000045
 - Alfian 05111640000073
+
+### Desain Visual Game
+Struktur data yang digunakan pada board:
+- List matra 3 dengan matra ke-1 menunjukkan ID dari board, matra ke-2 dan ke-3 berturut-turut adalah baris dan kolom pada board.
+- List yang digunakan untuk menyimpan *ID player* dengan *write access* ke board
+- *State* untuk menyimpan keadaan dari board
+
+*Player* akan hanya dapat bermain pada satu bagian board, dimana tiap 3x3 bagian board digunakan oleh 2 *player* untuk bermain. *Player* tidak dapat meletakkan bidak pada bagian board lain.
+
+Ilustrasi board dengan 3 permainan:
+![illustboard](assets/board.png) 
+
 ### Arsitektur
 ![Arsitektur](assets/architecture.png)
 #### Klien
