@@ -6,7 +6,7 @@
 
 ### Desain Visual Game
 Struktur data yang digunakan pada board:
-- List matra 3 dengan matra ke-1 menunjukkan ID dari board, matra ke-2 dan ke-3 berturut-turut adalah baris dan kolom pada board.
+- List matra 3 dengan matra pertama menunjukkan ID dari board, matra ke-2 dan ke-3 berturut-turut adalah baris dan kolom pada board.
 - List yang digunakan untuk menyimpan *ID player* dengan *write access* ke board
 - *State* untuk menyimpan keadaan dari board
 
@@ -18,9 +18,15 @@ Ilustrasi board dengan 3 permainan:
 ### Arsitektur
 ![Arsitektur](assets/architecture.png)
 #### Klien
-Node ini adalah player dari game Tic-Tac-Toe
-#### Proxy
-Node ini sebagai jembatan klien ke server game. Node ini bertugas untuk menentukan koneksi klien ke salah satu server yang tersedia. Selain itu, node ini akan mendistribusikan perintah yang dikirimkan oleh klien ke seluruh server. Perintah dari klien tersebut juga akan dikirimkan ke Transactions Manager
+Node ini adalah player dari game Tic-Tac-Toe. Saat menaruh bidak, node ini mengirim perintah `PUT`; balasan yang mungkin dari Game Master adalah sebagai berikut.
+- `OK`: Pemain berhasil menaruh bidaknya, giliran berganti ke lawan
+- `BAD`: Pemain memilih sel yang sudah terisi bidak, sehingga gagal bergerak, dan masih tetap berada di gilirannya
+- `NTRN`: Singkatan dari `NOT TURN`, pemain berusaha menaruh bidak di suatu sel saat bukan gilirannya
+- `WIN`: Pemain menaruh bidak di suatu sel, dan pemain tersebut juga menang
+- `LOSE`: Pemain lawan menaruh bidak di suatu sel, dan pemain ini kalah  
+Setelah pemainan berakhir (kedua pemain menerima pesan `WIN` atau `LOSE`), maka pemain nomer 1 akan mengirimkan pesan `END` ke server sebagai pnenanda pemain berakhir dan *board* dapat dibersihkan
+#### Proxy/Replication Manager
+Node ini sebagai jembatan klien ke server game. Node ini bertugas untuk menentukan koneksi klien ke salah satu server yang tersedia. Selain itu, node ini akan mendistribusikan perintah yang dikirimkan oleh klien ke seluruh server. Perintah dari klien tersebut juga akan dikirimkan ke Transactions Manager. Node ini juga bertugas untuk meneruskan respon dari Game Master ke klien
 #### Transactions Manager
 Node ini bertugas untuk menyimpan seluruh perintah/instruksi/transaksi yang pernah di-*request* oleh klien dan didistribusikan kepada Server. Format data transaksi yang disimpan adalah `<INDEX_NUM> <INSTRUCTION>`, contohnya:
 ```
