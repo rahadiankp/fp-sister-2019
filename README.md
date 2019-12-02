@@ -67,7 +67,8 @@ Node ini tempat di mana *state* game berada dan proses yang berkaitan dengan jal
 ![board](project/client/assets/board.png)
 
 - Bidak
-    - Bidak yang digunakan pemain ditentukan oleh game server.\
+    - Bidak yang digunakan pemain ditentukan oleh game server.
+    - Lokasi pada papan permainan yang telah ditempati oleh suatu bidak tidak dapat digunakan untuk meletakkan bidak lagi.\
 ![x](project/client/assets/blue_x.png)
 ![o](project/client/assets/red_o.png)
 
