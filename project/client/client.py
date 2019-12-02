@@ -14,11 +14,11 @@ class Client:
         # ==== need to fetch board data from game server
 
         # ====
-        self.drawer = drawer.Drawer()
+        self.drawer = drawer.Drawer(self.board)
 
-    @staticmethod
-    def start():
-        pass
+    def start(self):
+        self.drawer.debug_run()
 
 if __name__ == "__main__":
-    Client.start()
+    client = Client()
+    client.start()
