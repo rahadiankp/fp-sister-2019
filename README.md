@@ -54,3 +54,20 @@ Node ini tempat di mana *state* game berada dan proses yang berkaitan dengan jal
 6. Jika jumlahnya sama dengan perintah yang dieksekusi oleh Server, maka ke no. 8; Jika tidak, ke no. 7
 7. Ambil sisa perintah yang belum ter-*fetch* oleh Server di Transactions Manager. Kembali ke no. 5
 8. *Recovery* sudah sukses dilaksanakan, Server menyatakan dirinya READY dan siap untuk menerima koneksi
+
+### Visualisasi
+#### Dependensi
+- PyGame
+
+#### Rancangan Tampilan
+- Papan permainan
+    - Satu permainan akan dilakukan pada satu bagian papan permainan, dipisahkan berdasarkan warna untuk mempermudah pemain mengetahui papan permainan yang digunakan.
+    - Pemain dapat meletakkan bidak pada papan permainan dengan meng-klik lokasi pada papan permainan yang telah ditentukan oleh game server.
+    - Pemain tidak dapat meletakkan bidak di luar area permainan yang telah ditentukan game server.
+![board](project/client/assets/board.png)
+
+- Bidak
+    - Bidak yang digunakan pemain ditentukan oleh game server.\
+![x](project/client/assets/blue_x.png)
+![o](project/client/assets/red_o.png)
+
