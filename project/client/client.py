@@ -4,20 +4,31 @@ import drawer
 import rmconnector
 import threading
 
+import pprint
+
 class Client:
     
     board = None
     drawer = None
 
     def __init__(self):
-        self.board = board.Board()
         # ==== need to fetch board data from game server
-
+        fetch = [
+                    ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+                    ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+                    ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+                    ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+                    ['-', '-', '-', '-', '-', '-', '-', '-', '-'],
+                    ['-', '-', '-', '-', '-', '-', '-', '-', '-']
+        ]
         # ====
-        self.drawer = drawer.Drawer(self.board)
+        # this client's player piece ('o' or 'x') used as parameter below
+        self.board = board.Board(fetch)
+        temp = 'x'
+        self.drawer = drawer.Drawer(self.board, temp)
 
     def start(self):
-        self.drawer.debug_run()
+        self.drawer.update_screen()
 
 if __name__ == "__main__":
     client = Client()
