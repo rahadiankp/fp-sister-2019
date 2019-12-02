@@ -8,7 +8,17 @@ class Drawer:
     GUIBOARD_RECTSIZE = 80  # in px
     GUIBOARD_OFFSET = 2     # in px
 
-    Board = None
+    board = None
+    is_turn = False
+
+    # pygame
+    # pygame config, used for game setting
+    CAPTION = "Game Board"
+    RESOLUTION = (800, 560)
+    # end of game setting
+    # pygame variable
+    screen = None
+    # end of pygame variable
 
     def __init__(self):
         pass
@@ -19,7 +29,7 @@ class Drawer:
         # create function for every feature to be drawn
 
     def draw_board(self): # draw visualization of board without piece
-        pass
+        self.screen.blit()
 
     def draw_piece(self, board_data): # draw board's piece
         pass
@@ -45,3 +55,11 @@ class Drawer:
         row = y / Drawer.GUIBOARD_RECTSIZE
 
         return [row, col]
+    
+    # set pygame config
+    def init_pygame(self, board):
+        pygame.init()
+        pygame.display.set_caption(self.CAPTION)
+        self.screen = pygame.display.set_mode(self.RESOLUTION)
+                
+        
