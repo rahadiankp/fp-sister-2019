@@ -47,10 +47,10 @@ class Drawer:
         
         # load all resource here
         self.resource.update({'board': pygame.image.load('assets/board.png')})
-        # self.resource.update({'red_o': pygame.image.load('assets/red_o.png')})
-        # self.resource.update({'red_x': pygame.image.load('assets/red_x.png')})
-        # self.resource.update({'blue_o': pygame.image.load('assets/blue_o.png')})
-        # self.resource.update({'blue_x': pygame.image.load('assets/blue_x.png')})
+        self.resource.update({'red_o': pygame.image.load('assets/red_o.png')})
+        self.resource.update({'red_x': pygame.image.load('assets/red_x.png')})
+        self.resource.update({'blue_o': pygame.image.load('assets/blue_o.png')})
+        self.resource.update({'blue_x': pygame.image.load('assets/blue_x.png')})
 
     def draw(self, board): # will be threaded
         Drawer.draw_board()
