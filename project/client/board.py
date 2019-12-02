@@ -13,7 +13,7 @@ class Board:
 
     def __init__(self, board_data):
         self.board_data = board_data
-        # Debug only
+        # Debug only, should be set from gameserver
         self.board_id = '2-2'
         #
         pass
@@ -23,8 +23,8 @@ class Board:
         return [int(tmp[0]), int(tmp[1])]
 
     def is_valid(self, coordinate): # may be moved to game server with addition board/board_id parameter
-        rowcol = self.break_id()
-        if abs(rowcol[0] - coordinate[0]) <= 1 and abs(rowcol[1] - coordinate[1]) <= 1 and self.board_data[coordinate[1]][coordinate[0]] == '-': # need to check outside writable region
+        colrow = self.break_id()
+        if abs(colrow[0] - coordinate[0]) <= 1 and abs(colrow[1] - coordinate[1]) <= 1 and self.board_data[coordinate[1]-1][coordinate[0]-1] == '-': # need to check outside writable region
             return True
         return False
 

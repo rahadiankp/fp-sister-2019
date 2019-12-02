@@ -22,6 +22,7 @@ class Client:
                     ['-', '-', '-', '-', '-', '-', '-', '-', '-']
         ]
         # ====
+        
         # this client's player piece ('o' or 'x') used as parameter below
         self.board = board.Board(fetch)
         temp = 'x'
