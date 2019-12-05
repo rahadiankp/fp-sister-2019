@@ -7,45 +7,48 @@ from project.util.command_resolver import CommandResolver
 @Pyro4.behavior(instance_mode="single")
 class ProxyServerApi:
 
-    non_transaction_command = ['START', 'CHECK', 'UPDATE']
-    tm_uri = 'PYRONAME:transaction-manager@localhost:8888'
-    tm: TransactionManagerApi = Pyro4.Proxy(tm_uri)
+    def __init__(self, tm_uri):
+        self.non_transaction_command = ['START', 'CHECK', 'UPDATE']
 
-    server_api_list = []
-    last_index_call = 0
+        self.tm_uri = tm_uri
+        self.tm: TransactionManagerApi = Pyro4.Proxy(tm_uri)
 
-    fail_response = {'status': 'FAILED'}
+        self.server_api_list = []
+        self.last_index_call = 0
 
-    @staticmethod
-    def push_command(command: str):
+        self.fail_response = {'status': 'FAILED'}
+
+    def get_transaction_manager_uri(self):
+        return self.tm_uri
+
+    def push_command(self, command: str):
         command_data = CommandResolver.resolve_command(command)
-        last_index_call = ProxyServerApi.last_index_call
-        ProxyServerApi.last_index_call += 1
+        last_index_call = self.last_index_call
+        self.last_index_call += 1
 
-        if len(ProxyServerApi.server_api_list):
-            return ProxyServerApi.fail_response
+        if len(self.server_api_list):
+            return self.fail_response
 
         try:
-            server_response = ProxyServerApi.server_api_list[last_index_call].push_command(command_data)
+            server_response = self.server_api_list[last_index_call].push_command(command_data)
             if server_response['status'] == 'OK':
-                ProxyServerApi.tm.push_command(command_data)
-                for i, server in enumerate(ProxyServerApi.server_api_list):
+                self.tm.push_command(command_data)
+                for i, server in enumerate(self.server_api_list):
                     if i == last_index_call:
                         continue
                     server.push_command(command_data)
 
             else:
-                return ProxyServerApi.fail_response
+                return self.fail_response
 
-            if command_data['action'] not in ProxyServerApi.non_transaction_command:
-                ProxyServerApi.tm.push_command(command_data)
+            if command_data['action'] not in self.non_transaction_command:
+                self.tm.push_command(command_data)
 
         except():
-            return ProxyServerApi.fail_response
+            return self.fail_response
 
-    @staticmethod
-    def register_server(server_uri):
-        ProxyServerApi.server_api_list.append(
+    def register_server(self, server_uri):
+        self.server_api_list.append(
             Pyro4.Proxy(server_uri)
         )
-
+        print('registered')
