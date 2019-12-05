@@ -71,8 +71,8 @@ class Board(object):
 
         return False
 
-    def check_player_status(self, player_name):
-        return self.check_status(player_name)
+    def check_player_status(self, player_name) -> str:
+        return self.check_status(player_name)[2]
 
     def make_move(self, player_name, x, y) -> str:
         status, player_index, msg = self.check_status(player_name)
