@@ -13,7 +13,7 @@ class TicTacToeServer(object):
 
     def __init__(self, rm_proxy_uri):
         self.board_list = [Board(i, TicTacToeServer.PIECES, TicTacToeServer.WINPOS) for i in range(6)]
-        self.rm_proxy = TicTacToeServer.rm_proxy_uri(rm_proxy_uri)
+        self.rm_proxy = TicTacToeServer.connect_to_proxy(rm_proxy_uri)
         self.tm_proxy = TicTacToeServer.connect_to_proxy(self.rm_proxy.get_transaction_manager_uri())
         self.server_own_uri = ""
 
