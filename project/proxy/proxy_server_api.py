@@ -6,8 +6,8 @@ from project.util.command_resolver import CommandResolver
 
 class ProxyServerApi:
 
-    non_transaction_command = ["START", "CHECK", "UPD"]
-    tm_uri = "PYRONAME:transaction-manager@localhost:8888"
+    non_transaction_command = ['START', 'CHECK', 'UPDATE']
+    tm_uri = 'PYRONAME:transaction-manager@localhost:8888'
     tm: TransactionManagerApi = Pyro4.Proxy(tm_uri)
 
     server_api_list = []
@@ -26,7 +26,7 @@ class ProxyServerApi:
 
         try:
             server_response = ProxyServerApi.server_api_list[last_index_call].push_command(command_data)
-            if server_response["status"] == "SUCCESS":
+            if server_response['status'] == 'OK':
                 ProxyServerApi.tm.push_command(command_data)
                 for i, server in enumerate(ProxyServerApi.server_api_list):
                     if i == last_index_call:
@@ -36,7 +36,7 @@ class ProxyServerApi:
             else:
                 return ProxyServerApi.fail_response
 
-            if command_data["action"] not in ProxyServerApi.non_transaction_command:
+            if command_data['action'] not in ProxyServerApi.non_transaction_command:
                 ProxyServerApi.tm.push_command(command_data)
 
         except():

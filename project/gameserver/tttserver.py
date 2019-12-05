@@ -22,20 +22,47 @@ class TicTacToeServer(object):
 
         return proxy
 
-    @Pyro4.expose
-    def push_command(self, command):
-        """Return msg to client
+    def handle_start(self, username):
+        for i, board in enumerate(self.board_list):
+            is_available, player_id = board.register_player(username)
 
-        Command list & responses:
-        - START <player_name>
-            SUCCESS:
-                -> OK <board_id> <player_id> : Successfully registered to board <board_id> and as player 0|1
-            FAILED:
-                -> FULL : Failed to register/start a game due to maximum player count reached
-        - PUT <player_name> <board_id> <coordinate>
-            SUCCESS:
-                -> OK
-        """
+            if is_available:
+                return {
+                    'status': 'OK',
+                    'board_id': i,
+                    'player_id': player_id
+                }
+
+        return {
+            'status': 'FAIL',
+            'message': 'No board available'
+        }
+
+    def handle_put(self, board_id, username, x, y):
+        self.board_list[board_id].make_move(username, x, y)
+        return {
+            'status': 'OK'
+        }
+
+    @Pyro4.expose
+    def push_command(self, command_data):
+        action = command_data['action']
+        board_id = command_data.get('board_id')
+        username = command_data.get('username')
+
+        if action == 'START':
+            return self.handle_start(username)
+
+        elif action == 'PUT':
+            return self.handle_put(board_id, username, command_data['x'], command_data['y'])
+
+        elif action == 'CHECK':
+            return {
+                'status': 'OK',
+                'data': self.board_list[board_id].check_player_status(username)
+            }
+        elif action == 'UPDATE':
+            pass
 
     def get_all_boards_state(self):
         board_states = []
