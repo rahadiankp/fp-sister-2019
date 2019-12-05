@@ -14,7 +14,7 @@ class TicTacToeServer(object):
     def __init__(self, rm_proxy_uri):
         self.board_list = [Board(i, TicTacToeServer.PIECES, TicTacToeServer.WINPOS) for i in range(6)]
         self.rm_proxy = TicTacToeServer.connect_to_proxy(rm_proxy_uri)
-        self.tm_proxy = TicTacToeServer.connect_to_proxy(self.rm_proxy.get_transaction_manager_uri())
+        self.tm_proxy = None
         self.server_own_uri = ""
 
     @staticmethod
@@ -22,6 +22,12 @@ class TicTacToeServer(object):
         proxy = Pyro4.Proxy(uri)
 
         return proxy
+
+    def connect_to_tm(self):
+        self.tm_proxy = TicTacToeServer.connect_to_proxy(self.rm_proxy.get_transaction_manager_uri())
+
+    def register_to_rm(self):
+        self.rm_proxy.register_server(self.server_own_uri)
 
     @Pyro4.expose
     def get_uri(self):

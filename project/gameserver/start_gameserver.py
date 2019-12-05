@@ -9,6 +9,8 @@ def start_server(host: str, rm_proxy_uri):
     tictactoe_server.server_own_uri = uri
     print("Game Server is running on URI:")
     print(tictactoe_server.server_own_uri)
+    tictactoe_server.register_to_rm()
+    tictactoe_server.connect_to_tm()
 
     daemon.requestLoop()
 

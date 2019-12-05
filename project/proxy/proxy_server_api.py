@@ -18,9 +18,11 @@ class ProxyServerApi:
 
         self.fail_response = {'status': 'FAILED'}
 
+    @Pyro4.expose
     def get_transaction_manager_uri(self):
         return self.tm_uri
 
+    @Pyro4.expose
     def push_command(self, command: str):
         command_data = CommandResolver.resolve_command(command)
         last_index_call = self.last_index_call
@@ -47,6 +49,7 @@ class ProxyServerApi:
         except():
             return self.fail_response
 
+    @Pyro4.expose
     def register_server(self, server_uri):
         self.server_api_list.append(
             Pyro4.Proxy(server_uri)
