@@ -50,13 +50,13 @@ class Board(object):
 
     def register_player(self, player_name):
         if len(self.player_name_list) > 2:
-            return False
+            return False, -1
 
         self.player_name_list.append(player_name)
         if len(self.player_name_list) == 2:
             self.game_started = True
 
-        return True
+        return True, len(self.player_name_list) - 1
 
     def switch_turn(self):
         self.is_player_1_turn = not self.is_player_1_turn
