@@ -11,6 +11,7 @@ class TransactionManager:
         api = Pyro4.expose(TransactionManagerApi)
         uri_tm = daemon.register(api)
         ns.register("{}" . format("transaction-manager"), uri_tm)
+        print(uri_tm)
         daemon.requestLoop()
 
 

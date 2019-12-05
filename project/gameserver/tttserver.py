@@ -24,6 +24,10 @@ class TicTacToeServer(object):
         return proxy
 
     @Pyro4.expose
+    def get_uri(self):
+        return self.server_own_uri
+
+    @Pyro4.expose
     def push_command(self, command_data):
         action = command_data['action']
         board_id = command_data.get('board_id')
@@ -69,13 +73,9 @@ class TicTacToeServer(object):
             'data': self.board_list[board_id].check_player_status(username)
         }
 
-    def get_all_boards_state(self):
+    def handle_update(self) -> dict:
         board_states = []
         for board in self.board_list:
             board_states.append(board.board_data)
 
-        return board_states
-
-    def get_board_check(self, board_id, player_name) -> str:
-        board = self.board_list[board_id]
-        return board.check_player_status(player_name)
+        return {'status': 'OK', 'data': board_states}
