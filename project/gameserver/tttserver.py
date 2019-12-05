@@ -44,6 +44,12 @@ class TicTacToeServer(object):
             'status': 'OK'
         }
 
+    def handle_check(self, board_id, username):
+        return {
+            'status': 'OK',
+            'data': self.board_list[board_id].check_player_status(username)
+        }
+
     @Pyro4.expose
     def push_command(self, command_data):
         action = command_data['action']
@@ -57,10 +63,8 @@ class TicTacToeServer(object):
             return self.handle_put(board_id, username, command_data['x'], command_data['y'])
 
         elif action == 'CHECK':
-            return {
-                'status': 'OK',
-                'data': self.board_list[board_id].check_player_status(username)
-            }
+            return self.handle_check(board_id, username)
+
         elif action == 'UPDATE':
             pass
 
