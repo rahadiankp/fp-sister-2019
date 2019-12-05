@@ -4,6 +4,7 @@ from project.transaction_manager.transaction_manager_api import TransactionManag
 from project.util.command_resolver import CommandResolver
 
 
+@Pyro4.behavior(instance_mode="single")
 class ProxyServerApi:
 
     non_transaction_command = ['START', 'CHECK', 'UPDATE']
