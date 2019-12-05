@@ -24,7 +24,7 @@ class TicTacToeServer(object):
 
     @Pyro4.expose
     def push_command(self, command):
-        '''Return msg to client
+        """Return msg to client
 
         Command list & responses:
         - START <player_name>
@@ -35,4 +35,15 @@ class TicTacToeServer(object):
         - PUT <player_name> <board_id> <coordinate>
             SUCCESS:
                 -> OK
-        '''
+        """
+
+    def get_all_boards_state(self):
+        board_states = []
+        for board in self.board_list:
+            board_states.append(board.board_data)
+
+        return board_states
+
+    def get_board_check(self, board_id, player_name) -> str:
+        board = self.board_list[board_id]
+        return board.check_player_status(player_name)
