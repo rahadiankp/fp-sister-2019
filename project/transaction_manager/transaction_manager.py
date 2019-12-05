@@ -9,8 +9,8 @@ class TransactionManager:
         daemon = Pyro4.Daemon(host="localhost")
         ns = Pyro4.locateNS("localhost",8888)
         api = Pyro4.expose(TransactionManagerApi)
-        uri_fileserver = daemon.register(api)
-        ns.register("{}" . format("transaction-manager"), uri_fileserver)
+        uri_tm = daemon.register(api)
+        ns.register("{}" . format("transaction-manager"), uri_tm)
         daemon.requestLoop()
 
 
