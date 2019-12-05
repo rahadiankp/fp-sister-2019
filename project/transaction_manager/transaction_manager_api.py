@@ -8,8 +8,8 @@ class TransactionManagerApi:
     :type data: dict @see util.CommandResolver
     """
     @staticmethod
-    def push_command(data):
-        TransactionManagerApi.data.append(data)
+    def push_command(command_data):
+        TransactionManagerApi.data.append(command_data)
         TransactionManagerApi.data_len += 1
 
     @staticmethod
