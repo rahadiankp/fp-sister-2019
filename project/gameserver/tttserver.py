@@ -29,7 +29,7 @@ class TicTacToeServer(object):
         Command list & responses:
         - START <player_name>
             SUCCESS:
-                -> OK <board_id> : Successfully registered to board <board_id>
+                -> OK <board_id> <player_id> : Successfully registered to board <board_id> and as player 0|1
             FAILED:
                 -> FULL : Failed to register/start a game due to maximum player count reached
         - PUT <player_name> <board_id> <coordinate>
