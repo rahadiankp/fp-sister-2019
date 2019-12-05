@@ -23,34 +23,6 @@ class TicTacToeServer(object):
 
         return proxy
 
-    def handle_start(self, username):
-        for i, board in enumerate(self.board_list):
-            is_available, player_id = board.register_player(username)
-
-            if is_available:
-                return {
-                    'status': 'OK',
-                    'board_id': i,
-                    'player_id': player_id
-                }
-
-        return {
-            'status': 'FAIL',
-            'message': 'No board available'
-        }
-
-    def handle_put(self, board_id, username, x, y):
-        self.board_list[board_id].make_move(username, x, y)
-        return {
-            'status': 'OK'
-        }
-
-    def handle_check(self, board_id, username):
-        return {
-            'status': 'OK',
-            'data': self.board_list[board_id].check_player_status(username)
-        }
-
     @Pyro4.expose
     def push_command(self, command_data):
         action = command_data['action']
@@ -68,6 +40,34 @@ class TicTacToeServer(object):
 
         elif action == 'UPDATE':
             pass
+
+    def handle_start(self, username):
+        for i, board in enumerate(self.board_list):
+            is_available, player_id = board.register_player(username)
+
+            if is_available:
+                return {
+                    'status': 'OK',
+                    'board_id': i,
+                    'player_id': player_id
+                }
+
+        return {
+            'status': 'FAIL',
+            'message': 'No board available'
+        }
+
+    def handle_put(self, board_id, username, x, y):
+        return {
+            'status': 'OK',
+            'message': self.board_list[board_id].make_move(username, x, y)
+        }
+
+    def handle_check(self, board_id, username):
+        return {
+            'status': 'OK',
+            'data': self.board_list[board_id].check_player_status(username)
+        }
 
     def get_all_boards_state(self):
         board_states = []
