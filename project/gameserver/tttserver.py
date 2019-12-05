@@ -38,7 +38,7 @@ class TicTacToeServer(object):
         action = command_data['action']
         board_id = command_data.get('board_id')
         username = command_data.get('username')
-
+        print('sukses2')
         if action == 'START':
             return self.handle_start(username)
 

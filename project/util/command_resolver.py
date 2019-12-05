@@ -8,7 +8,6 @@ class CommandResolver:
 
         if commands[0] == 'START':
             return {
-                'board_id': commands[2],
                 'action': 'START',
                 'username': commands[1]
             }
@@ -18,7 +17,7 @@ class CommandResolver:
             }
         else:
             res = {
-                "board_id": commands[2],
+                "board_id": int(commands[2]),
                 "action": commands[0],
                 "username": commands[1]
             }

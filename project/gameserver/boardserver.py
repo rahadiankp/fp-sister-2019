@@ -49,7 +49,7 @@ class Board(object):
         return True, player_index, "TURN"
 
     def register_player(self, player_name):
-        if len(self.player_name_list) > 2:
+        if len(self.player_name_list) >= 2:
             return False, -1
 
         self.player_name_list.append(player_name)
@@ -74,23 +74,29 @@ class Board(object):
     def check_player_status(self, player_name) -> str:
         return self.check_status(player_name)[2]
 
-    def make_move(self, player_name, x, y) -> str:
+    def make_move(self, player_name, x: int, y: int) -> str:
+        print('sukses3')
         status, player_index, msg = self.check_status(player_name)
+        print('sukses4')
         if not status:
             return msg
 
         # check if coord has piece already
         if self.board_data[y][x] != "-":
             return "BAD"
-
+        print('sukses4')
         piece = self.pieces[player_index]
+        print('sukses5')
         self.board_data[y][x] = piece
+        print('sukses6')
 
         self.switch_turn()
+        print('sukses7')
 
         # immediately send winning msg to winning player after the move
         with self.check_winning() as (status, msg):
             if status:
                 return msg
+        print('sukses8')
 
         return "OK {0} {1},{2}".format(piece, x, y)

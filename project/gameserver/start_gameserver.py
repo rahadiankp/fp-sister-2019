@@ -16,4 +16,4 @@ def start_server(host: str, rm_proxy_uri):
 
 
 if __name__ == "__main__":
-    start_server("localhost", "testonly")
+    start_server("localhost", "PYRONAME:proxyserver@localhost:8888")
