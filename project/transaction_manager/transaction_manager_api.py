@@ -11,7 +11,7 @@ class TransactionManagerApi:
     def push_command(command_data):
         TransactionManagerApi.data.append(command_data)
         TransactionManagerApi.data_len += 1
-        print(TransactionManagerApi.data)
+        # print(TransactionManagerApi.data)
 
     @staticmethod
     def get_all_data():

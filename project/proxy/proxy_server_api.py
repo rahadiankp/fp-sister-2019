@@ -24,16 +24,16 @@ class ProxyServerApi:
 
     @Pyro4.expose
     def push_command(self, command: str):
-        print('before')
+        # print('before')
         command_data = CommandResolver.resolve_command(command)
         last_index_call = self.last_index_call
         self.last_index_call += 1
-        print(command_data)
+        # print(command_data)
         if self.last_index_call >= len(self.server_api_list):
             self.last_index_call = 0
 
-        print(last_index_call)
-        print(len(self.server_api_list))
+        # print(last_index_call)
+        # print(len(self.server_api_list))
 
         if len(self.server_api_list) == 0:
             return self.fail_response_no_server
@@ -69,4 +69,4 @@ class ProxyServerApi:
         self.server_api_list.append(
             Pyro4.Proxy(server_uri)
         )
-        print('registered')
+        print('Registered -', server_uri)

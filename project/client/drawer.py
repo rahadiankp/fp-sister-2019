@@ -42,7 +42,7 @@ class Drawer:
         self.drawn = self.board.board_data.copy()
         self.load_resource()
         self.init_drawn()
-        self.init_pygame(self.board, username, board_id)
+        self.init_pygame()
 
         self.update_running = True
         self.update_thread = threading.Thread(target=self.update_board_threaded)
@@ -62,17 +62,15 @@ class Drawer:
                         # event unregister
                         unregister_response = self.proxy.push_command(
                             "UNREGISTER " + self.username + " " + self.board_id)
-                        print(unregister_response)
                         self.update_running = False
                         self.update_thread.join()
                         self.check_running = False
-                        self.check_thread.join()
+                        # self.check_thread.join()
                         running = False
                         break
                     
                     if event.type == pygame.MOUSEBUTTONUP:
                         mousepx = pygame.mouse.get_pos()
-                        print(mousepx, self.position_to_coordinate(mousepx), self.position_to_pixel(self.position_to_coordinate(mousepx)))
                         self.place_piece(mousepx)
 
                     self.draw()
@@ -153,7 +151,7 @@ class Drawer:
 
     def update_board_threaded(self):
         while self.update_running:
-            time.sleep(2)
+            time.sleep(0.5)
             self.drawn = self.proxy.push_command("UPDATE")['data']
 
             self.init_drawn()
@@ -163,11 +161,12 @@ class Drawer:
         while self.check_running:
             time.sleep(2)
             check_response: dict = self.proxy.push_command("CHECK " + self.username + " " + self.board_id)
-            print(check_response)
             prefix_title = check_response['message']
             if prefix_title.split()[0] in stop_response:
-                pygame.quit()
-                sys.exit()
+                self.proxy.push_command("RPOL " + self.username + " " + self.board_id)
+                self.update_running = False
+                pygame.event.post(pygame.event.Event(pygame.QUIT, {}))
+                break
             # pygame.display.set_caption(self.title + " - " + prefix_title)
 
     def position_to_pixel(self, coordinate):
@@ -187,7 +186,6 @@ class Drawer:
         return [col, row]
     
     def place_piece(self, pixel):
-        stop_response = ["DRAW", "WIN"]
         coordinate = self.position_to_coordinate(pixel)
 
         # generate command string here (to be saved to TM)
@@ -200,24 +198,17 @@ class Drawer:
         if put_response['status'] != "OK":
             print(put_response['message'])
             return
-        if put_response['message'].split()[0] in stop_response:
-            self.check_running = False
-            pygame.quit()
         piece = put_response['message'].split()[1]
-        pprint.pprint(cmd)
         self.board.board_data[coordinate[1]-1][coordinate[0]-1] = piece
         self.update_drawn(self.position_to_pixel(coordinate), coordinate, piece)
 
     # set pygame config
-    def init_pygame(self, board, username, board_id):
+    def init_pygame(self):
         pygame.init()
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode(self.RESOLUTION)
                 
     def init_drawn(self):
-        # pprint.pprint(self.board.board_data)
-        # self.drawn = self.board.get_board_data()
-
         for row in range(0, 6):
             for column in range(0, 9):
                 pix = self.position_to_pixel([column+1, row+1])
@@ -227,7 +218,6 @@ class Drawer:
                     self.drawn[row][column] = [self.resource['X'].copy(), pix]
                 elif self.drawn[row][column] == 'O':
                     self.drawn[row][column] = [self.resource['O'].copy(), pix]
-        # pprint.pprint(self.board.board_data)
 
     def update_drawn(self, pixel, coordinate, piece):
         self.drawn[coordinate[1]-1][coordinate[0]-1] = [self.resource[piece].copy(), pixel]

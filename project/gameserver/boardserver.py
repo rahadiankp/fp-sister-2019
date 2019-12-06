@@ -25,6 +25,18 @@ class Board(object):
             ["-", "-", "-"],
         ]
 
+    def reset_board_poll(self, username):
+        if username not in self.player_name_list:
+            return username + " not member of board"
+
+        self.player_name_list.remove(username)
+
+        if not self.player_name_list:
+            self.reset_board()
+            return "OK Poll Done"
+        else:
+            return "OK Poll by " + username
+
     def check_status(self, player_name):
         player_index = -1
         try:
@@ -39,7 +51,6 @@ class Board(object):
         # check if victory has been achieved
         if self.game_end_message:
             game_end_message = self.game_end_message
-            self.reset_board()
             return False, player_index, game_end_message
 
         player_turn = bool(player_index)

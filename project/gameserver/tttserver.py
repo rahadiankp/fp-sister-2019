@@ -56,7 +56,7 @@ class TicTacToeServer(object):
 
     @Pyro4.expose
     def push_command(self, command_data, is_fail_over=False):
-        print(command_data)
+        # print(command_data)
         if not self.is_ready and not is_fail_over:
             return {
                 'status': 'NOT_READY'
@@ -75,6 +75,8 @@ class TicTacToeServer(object):
             return self.handle_update()
         elif action == "UNREGISTER":
             return self.handle_unregister(board_id, username)
+        elif action == "RPOL":
+            return self.handle_reset_poll(board_id, username)
         else:
             return {
                 'status': 'FAILED',
@@ -103,8 +105,9 @@ class TicTacToeServer(object):
                 'status': 'FAILED',
                 'message': 'Invalid board id'
             }
+        ok_response = ["OK", "DRAW", "WIN"]
         put_response = self.board_list[board_id].make_move(username, x, y)
-        if put_response.split()[0] == 'OK':
+        if put_response.split()[0] in ok_response:
             return {
                 'status': 'OK',
                 'message': put_response
@@ -158,6 +161,26 @@ class TicTacToeServer(object):
                 'status': 'FAILED',
                 'message': 'Username ' + username + " not in board " + str(board_id)
             }
+
+    def handle_reset_poll(self, board_id, username):
+        if board_id >= 6:
+            return {
+                'status': 'FAILED',
+                'message': 'Invalid board id'
+            }
+
+        board = self.board_list[board_id]
+        reset_poll_response = board.reset_board_poll(username)
+        if reset_poll_response.split()[0] == "OK":
+            return {
+                'status': 'OK',
+                'message': reset_poll_response
+            }
+
+        return {
+            'status': 'FAILED',
+            'message': reset_poll_response
+        }
 
     @Pyro4.expose
     def ping(self):
