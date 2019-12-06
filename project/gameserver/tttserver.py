@@ -102,3 +102,19 @@ class TicTacToeServer(object):
             board_states[3*i+2] = board1.board_data[2] + board2.board_data[2] + board3.board_data[2]
 
         return {'status': 'OK', 'data': board_states}
+
+    """Debug methods
+    
+    """
+
+    @Pyro4.expose
+    def verbose_server(self):
+        result = []
+        for board in self.board_list:
+            a = dict()
+            a["player_1"] = board.player_name_list[0] if len(board.player_name_list) > 0 else None
+            a["player_2"] = board.player_name_list[1] if len(board.player_name_list) > 1 else None
+            a["board_data"] = board.board_data
+            result.append(a)
+
+        return result
