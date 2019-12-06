@@ -16,7 +16,7 @@ class ProxyServerApi:
         self.server_api_list = []
         self.last_index_call = 0
 
-        self.fail_response = {'status': 'FAILED'}
+        self.fail_response_no_server = {'status': 'FAILED', 'message': 'No servers available'}
 
     @Pyro4.expose
     def get_transaction_manager_uri(self):
@@ -36,7 +36,7 @@ class ProxyServerApi:
         print(len(self.server_api_list))
 
         if len(self.server_api_list) == 0:
-            return self.fail_response
+            return self.fail_response_no_server
 
         try:
             server_response = self.server_api_list[last_index_call].push_command(command_data)
@@ -51,7 +51,7 @@ class ProxyServerApi:
 
                 return server_response
             else:
-                return self.fail_response
+                return server_response
 
         except:
             print('ada error')
