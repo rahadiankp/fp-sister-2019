@@ -9,6 +9,8 @@ def start_mock_client(uri_list: list):
 
     while True:
         pause = input()
+        if pause != "reload":
+            continue
         idx = 0
         for proxy in proxy_list:
             print("Server", idx)
@@ -24,5 +26,5 @@ def start_mock_client(uri_list: list):
 
 
 if __name__ == "__main__":
-    proxy_list = ["PYRO:obj_9d12fa3510164767a770396957365ecb@localhost:64232", "PYRO:obj_7a7155f4b638458ab45501ebef859a53@localhost:64238"]
+    proxy_list = ["PYRO:obj_9d12fa3510164767a770396957365ecb@localhost:64232"]
     start_mock_client(proxy_list)
