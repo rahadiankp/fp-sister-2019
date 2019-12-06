@@ -15,6 +15,7 @@ class TicTacToeServer(object):
 
     def __init__(self, rm_proxy_uri):
         self.board_list = [Board(i, TicTacToeServer.PIECES, TicTacToeServer.WINPOS) for i in range(6)]
+        self.player_board_map = {}
         self.rm_proxy = TicTacToeServer.connect_to_proxy(rm_proxy_uri)
         self.tm_proxy = None
         self.server_own_uri = ""
@@ -84,10 +85,16 @@ class TicTacToeServer(object):
         }
 
     def handle_start(self, username):
+        if username in self.player_board_map:
+            return {
+                'status': 'FAILED',
+                'message': 'The username has been taken'
+            }
         for i, board in enumerate(self.board_list):
             is_available, player_id = board.register_player(username)
 
             if is_available:
+                self.player_board_map[username] = i
                 return {
                     'status': 'OK',
                     'board_id': i,
@@ -152,6 +159,7 @@ class TicTacToeServer(object):
         board = self.board_list[board_id]
         try:
             board.player_name_list.remove(username)
+            self.player_board_map.pop(username)
             return {
                 'status': 'OK',
                 'message': 'Username ' + username + " removed from board " + str(board_id)
