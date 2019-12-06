@@ -60,6 +60,10 @@ class ProxyServerApi:
             return self.push_command(command)
 
     @Pyro4.expose
+    def ping(self):
+        return "PONG"
+
+    @Pyro4.expose
     def register_server(self, server_uri):
         self.server_api_list.append(
             Pyro4.Proxy(server_uri)

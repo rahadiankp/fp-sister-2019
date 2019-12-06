@@ -129,6 +129,10 @@ class TicTacToeServer(object):
 
         return {'status': 'OK', 'data': board_states}
 
+    @Pyro4.expose
+    def ping(self):
+        return "PONG"
+
     """Debug methods
     
     """

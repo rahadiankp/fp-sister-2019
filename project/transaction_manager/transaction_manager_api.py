@@ -25,4 +25,6 @@ class TransactionManagerApi:
     def get_data_to_last_from(index):
         return TransactionManagerApi.data[index:]
 
-
+    @staticmethod
+    def ping(self):
+        return "PONG"
