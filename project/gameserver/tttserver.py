@@ -75,7 +75,7 @@ class TicTacToeServer(object):
             return self.handle_update()
         else:
             return {
-                'status': 'FAIL',
+                'status': 'FAILED',
                 'message': 'Unknown command'
         }
 
@@ -91,11 +91,16 @@ class TicTacToeServer(object):
                 }
 
         return {
-            'status': 'FAIL',
+            'status': 'FAILED',
             'message': 'No board available'
         }
 
     def handle_put(self, board_id, username, x, y):
+        if board_id >= 6:
+            return {
+                'status': 'FAILED',
+                'message': 'Invalid board id'
+            }
         put_response = self.board_list[board_id].make_move(username, x, y)
         if put_response.split()[0] == 'OK':
             return {
@@ -110,7 +115,10 @@ class TicTacToeServer(object):
 
     def handle_check(self, board_id, username):
         if board_id >= 6:
-            return {}
+            return {
+                'status': 'FAILED',
+                'message': 'Invalid board id'
+            }
         return {
             'status': 'OK',
             'data': self.board_list[board_id].check_player_status(username)
