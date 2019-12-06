@@ -1,6 +1,7 @@
 import Pyro4
 from project.proxy.proxy_server_api import ProxyServerApi
 
+# pyro4-ns -n localhost -p 8888
 
 def start_proxy(tm_uri):
     daemon = Pyro4.Daemon(host="localhost")

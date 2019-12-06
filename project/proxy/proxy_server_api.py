@@ -8,7 +8,7 @@ from project.util.command_resolver import CommandResolver
 class ProxyServerApi:
 
     def __init__(self, tm_uri):
-        self.non_transaction_command = ['START', 'CHECK', 'UPDATE']
+        self.non_transaction_command = ['CHECK', 'UPDATE']
 
         self.tm_uri = tm_uri
         self.tm: TransactionManagerApi = Pyro4.Proxy(tm_uri)
@@ -41,21 +41,23 @@ class ProxyServerApi:
         try:
             server_response = self.server_api_list[last_index_call].push_command(command_data)
             if server_response['status'] == 'OK':
-                self.tm.push_command(command_data)
                 for i, server in enumerate(self.server_api_list):
                     if i == last_index_call:
                         continue
                     server.push_command(command_data)
 
+                if command_data['action'] not in self.non_transaction_command:
+                    self.tm.push_command(command_data)
+
                 return server_response
             else:
                 return self.fail_response
 
-            if command_data['action'] not in self.non_transaction_command:
-                self.tm.push_command(command_data)
-
-        except():
-            return self.fail_response
+        except:
+            print('ada error')
+            self.server_api_list.pop(last_index_call)
+            self.last_index_call = 0
+            return self.push_command(command)
 
     @Pyro4.expose
     def register_server(self, server_uri):

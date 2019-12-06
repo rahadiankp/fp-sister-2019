@@ -1,6 +1,8 @@
 from project.gameserver.boardserver import Board
 import Pyro4
 
+from project.transaction_manager.transaction_manager_api import TransactionManagerApi
+
 
 @Pyro4.behavior(instance_mode="single")
 class TicTacToeServer(object):
@@ -16,6 +18,7 @@ class TicTacToeServer(object):
         self.rm_proxy = TicTacToeServer.connect_to_proxy(rm_proxy_uri)
         self.tm_proxy = None
         self.server_own_uri = ""
+        self.is_ready = False
 
     @staticmethod
     def connect_to_proxy(uri: str):
@@ -24,7 +27,25 @@ class TicTacToeServer(object):
         return proxy
 
     def connect_to_tm(self):
-        self.tm_proxy = TicTacToeServer.connect_to_proxy(self.rm_proxy.get_transaction_manager_uri())
+        self.tm_proxy: TransactionManagerApi = TicTacToeServer.connect_to_proxy(self.rm_proxy.get_transaction_manager_uri())
+        up_to_date = False
+        self.is_ready = False
+        from_index = 0
+        commands = self.tm_proxy.get_data_to_last_from(from_index)
+        latest_len = len(commands)
+
+        while not up_to_date:
+            for command in commands:
+                self.push_command(command, True)
+
+            new_latest_len = self.tm_proxy.get_data_length()
+            up_to_date = new_latest_len == latest_len
+            from_index = latest_len - 1
+            latest_len = new_latest_len
+            if not up_to_date:
+                commands = self.tm_proxy.get_data_to_last_from(from_index)
+
+        self.is_ready = True
 
     def register_to_rm(self):
         self.rm_proxy.register_server(self.server_own_uri)
@@ -34,11 +55,16 @@ class TicTacToeServer(object):
         return self.server_own_uri
 
     @Pyro4.expose
-    def push_command(self, command_data):
+    def push_command(self, command_data, is_fail_over=False):
+        print(command_data)
+        if not self.is_ready and not is_fail_over:
+            return {
+                'status': 'NOT_READY'
+            }
         action = command_data['action']
         board_id = command_data.get('board_id')
         username = command_data.get('username')
-        print('sukses2')
+
         if action == 'START':
             return self.handle_start(username)
         elif action == 'PUT':
