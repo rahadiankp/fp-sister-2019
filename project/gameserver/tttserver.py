@@ -86,15 +86,18 @@ class TicTacToeServer(object):
 
     def handle_start(self, username):
         if username in self.player_board_map:
+            board_id, player_id = self.player_board_map[username]
             return {
-                'status': 'FAILED',
-                'message': 'The username has been taken'
+                'status': 'OK',
+                'message': 'Resuming game',
+                'board_id': board_id,
+                'player_id': player_id
             }
         for i, board in enumerate(self.board_list):
             is_available, player_id = board.register_player(username)
 
             if is_available:
-                self.player_board_map[username] = i
+                self.player_board_map[username] = (i, player_id)
                 return {
                     'status': 'OK',
                     'board_id': i,
