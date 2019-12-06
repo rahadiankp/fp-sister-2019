@@ -14,7 +14,7 @@ class Board:
     def __init__(self, board_data):
         self.board_data = board_data
         # Debug only, should be set from gameserver
-        self.board_id = '2-2'
+        self.board_id = 0
         #
         pass
 

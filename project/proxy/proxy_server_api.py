@@ -53,7 +53,8 @@ class ProxyServerApi:
             else:
                 return server_response
 
-        except:
+        except Exception as e:
+            print(e)
             print('ada error')
             self.server_api_list.pop(last_index_call)
             self.last_index_call = 0

@@ -73,6 +73,8 @@ class TicTacToeServer(object):
             return self.handle_check(board_id, username)
         elif action == 'UPDATE':
             return self.handle_update()
+        elif action == "UNREGISTER":
+            return self.handle_unregister(board_id, username)
         else:
             return {
                 'status': 'FAILED',
@@ -121,7 +123,7 @@ class TicTacToeServer(object):
             }
         return {
             'status': 'OK',
-            'data': self.board_list[board_id].check_player_status(username)
+            'message': self.board_list[board_id].check_player_status(username)
         }
 
     def handle_update(self) -> dict:
@@ -136,6 +138,26 @@ class TicTacToeServer(object):
             board_states[3*i+2] = board1.board_data[2] + board2.board_data[2] + board3.board_data[2]
 
         return {'status': 'OK', 'data': board_states}
+
+    def handle_unregister(self, board_id, username):
+        if board_id >= 6:
+            return {
+                'status': 'FAILED',
+                'message': 'Invalid board id'
+            }
+
+        board = self.board_list[board_id]
+        try:
+            board.player_name_list.remove(username)
+            return {
+                'status': 'OK',
+                'message': 'Username ' + username + " removed from board " + str(board_id)
+            }
+        except ValueError:
+            return {
+                'status': 'FAILED',
+                'message': 'Username ' + username + " not in board " + str(board_id)
+            }
 
     @Pyro4.expose
     def ping(self):

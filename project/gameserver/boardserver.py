@@ -67,6 +67,7 @@ class Board(object):
         self.is_player_1_turn = not self.is_player_1_turn
 
     def check_winning(self):
+        # check for winning
         for ((x1, y1), (x2, y2), (x3, y3)) in self.winpos_list:
             a = self.board_data[y1][x1]
             b = self.board_data[y2][x2]
@@ -76,8 +77,22 @@ class Board(object):
             if self.board_data[y1][x1] == self.board_data[y2][x2] == self.board_data[y3][x3]:
                 piece_winning = self.board_data[y1][x1]
                 piece_index = self.pieces.index(piece_winning)
-                self.game_end_message = "WIN {0}".format(piece_index)
+                self.game_end_message = "WIN {} {}".format(piece_winning, piece_index)
                 return True, self.game_end_message
+
+        # check for draw
+        is_full = True
+        for row in self.board_data:
+            for cell in row:
+                if cell == "-":
+                    is_full = False
+                    break
+            if not is_full:
+                break
+
+        if is_full:
+            self.game_end_message = "DRAW"
+            return True, "DRAW"
 
         return False, "NOWIN"
 
@@ -91,28 +106,24 @@ class Board(object):
         return True
 
     def make_move(self, player_name, x: int, y: int) -> str:
-        print('sukses3')
         status, player_index, msg = self.check_status(player_name)
-        print('sukses4')
         if not status:
             return msg
 
         # check if coord has piece already
         if self.board_data[y][x] != "-" or not Board.valid_coordinate(x, y):
             return "BAD"
-        print('sukses4')
         piece = self.pieces[player_index]
-        print('sukses5')
         self.board_data[y][x] = piece
-        print('sukses6')
 
         self.switch_turn()
-        print('sukses7')
 
         # immediately send winning msg to winning player after the move
         status, msg = self.check_winning()
         if status:
+            if msg.split()[0] == "DRAW":
+                self.game_end_message = "DRAW {} {}".format(piece, player_index)
+                return self.game_end_message
             return msg
-        print('sukses8')
 
         return "OK {0} {1},{2}".format(piece, x, y)

@@ -26,5 +26,7 @@ def start_mock_client(uri_list: list):
 
 
 if __name__ == "__main__":
-    proxy_list = ["PYRO:obj_9d12fa3510164767a770396957365ecb@localhost:64232"]
+    proxy_list = ["PYRO:obj_d30d379a5a0b41ff99dc6acb22192eb3@localhost:63617",
+                  "PYRO:obj_890ed6f50a5044a8b87e3c3b6ca4a83a@localhost:63626",
+                  "PYRO:obj_26a96cf8e35a47c2849ddc116e37b5c1@localhost:63635"]
     start_mock_client(proxy_list)
