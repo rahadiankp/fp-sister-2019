@@ -70,9 +70,16 @@ class TicTacToeServer(object):
         }
 
     def handle_put(self, board_id, username, x, y):
+        put_response = self.board_list[board_id].make_move(username, x, y)
+        if put_response.split()[0] == 'OK':
+            return {
+                'status': 'OK',
+                'message': put_response
+            }
+
         return {
-            'status': 'OK',
-            'message': self.board_list[board_id].make_move(username, x, y)
+                'status': 'FAILED',
+                'message': put_response
         }
 
     def handle_check(self, board_id, username):
