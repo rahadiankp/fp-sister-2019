@@ -94,16 +94,16 @@ class Drawer:
 
     def draw(self): # will be threaded
         self.draw_board()
-        self.draw_dim()
         self.draw_piece()
         # create function for every feature to be drawn
         self.draw_game_status()
+        self.draw_dim()
 
     def draw_board(self): # draw visualization of board without piece
         self.screen.blit(self.resource['board'], (0, 0))
 
     def draw_dim(self):
-        dim_str = 'board_dim' + str(self.board_id)
+        dim_str = 'board_dim_' + str(self.board_id)
         self.screen.blit(self.resource[dim_str], (0, 0))
 
     def draw_piece(self): # draw board's piece
