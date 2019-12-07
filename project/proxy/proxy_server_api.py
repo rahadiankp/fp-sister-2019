@@ -21,10 +21,6 @@ class ProxyServerApi:
         self.game_server_failure_detection_thread = {}
 
         self.fail_response_no_server = {'status': 'FAILED', 'message': 'No servers available'}
-        #
-        # while True:
-        #     time.sleep(1)
-        #     print("test")
 
     @Pyro4.expose
     def get_transaction_manager_uri(self):
@@ -48,8 +44,8 @@ class ProxyServerApi:
             return self.fail_response_no_server
 
         try:
-            server_proxy_last_index = Pyro4.Proxy(self.server_api_list[last_index_call])
-            server_response = server_proxy_last_index.push_command(command_data)
+            server_proxy_last = Pyro4.Proxy(self.server_api_list[last_index_call])
+            server_response = server_proxy_last.push_command(command_data)
             if server_response['status'] == 'OK':
                 for i, server_uri in enumerate(self.server_api_list):
                     server_proxy = Pyro4.Proxy(server_uri)
@@ -95,6 +91,7 @@ class ProxyServerApi:
         # pfd_t = self.game_server_failure_detection_thread[server_uri]
         # pfd_t.join()
 
+        self.last_index_call = 0
         self.server_api_list.remove(server_uri)
         print("Unregistered -", server_uri)
 
