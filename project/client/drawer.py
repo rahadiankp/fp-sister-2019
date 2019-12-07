@@ -206,6 +206,10 @@ class Drawer:
     def place_piece(self, pixel):
         coordinate = self.position_to_coordinate(pixel)
 
+        # out of board mouse click
+        if coordinate[0] < 1 or coordinate[0] > 9 or coordinate[1] < 1 or coordinate[1] > 9:
+            return
+
         # generate command string here (to be saved to TM)
         server_id = self.get_board_id_by_coordinate(coordinate)
         server_coordinate = self.transpose_coordinate_by_id(coordinate, server_id)
