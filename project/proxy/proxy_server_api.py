@@ -1,10 +1,9 @@
+# from project.util.command_resolver import CommandResolver
 import threading
 import time
-
 import Pyro4
 import Pyro4.errors
-
-from project.util.command_resolver import CommandResolver
+import command_resolver
 
 
 @Pyro4.behavior(instance_mode="single")
@@ -43,7 +42,7 @@ class ProxyServerApi:
     @Pyro4.expose
     def push_command(self, command: str):
         # print('before')
-        command_data = CommandResolver.resolve_command(command)
+        command_data = command_resolver.CommandResolver.resolve_command(command)
         last_index_call = self.last_index_call
         self.last_index_call += 1
         if command_data['action'] not in self.non_transaction_command:

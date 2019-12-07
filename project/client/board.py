@@ -1,6 +1,4 @@
-
 class Board:
-
     # Board State
     FINISHED = 0
     # End Board State

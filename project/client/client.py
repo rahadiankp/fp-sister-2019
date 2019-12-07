@@ -1,8 +1,10 @@
-from project.client.board import Board
-from project.client.drawer import Drawer
+# from project.client.board import Board
+# from project.client.drawer import Drawer
 import getopt
 import sys
 import Pyro4
+import board
+import drawer
 
 
 class Client:
@@ -11,7 +13,6 @@ class Client:
     drawer = None
 
     def __init__(self, username, proxy_uri):
-        # this client's player piece ('o' or 'x') used as parameter below
         self.username = username
         self.proxy = Pyro4.Proxy(proxy_uri)
         register_response: dict = self.proxy.push_command("START " + username)
@@ -21,8 +22,8 @@ class Client:
         self.player_id = register_response['player_id']
         latest_board: dict = self.proxy.push_command("UPDATE")
         print(latest_board)
-        self.board = Board(latest_board['data'])
-        self.drawer = Drawer(self.board, self.username, str(self.board_id), self.player_id, self.proxy)
+        self.board = board.Board(latest_board['data'])
+        self.drawer = drawer.Drawer(self.board, self.username, str(self.board_id), self.player_id, self.proxy)
 
     def start(self):
         self.drawer.update_screen()
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     options, misc = getopt.getopt(sys.argv[1:], "u:h:",
                                   ["username=", "host="])
     for opt, val in options:
-        if opt in ["-n", "--name"]:
+        if opt in ["-u", "--username"]:
             USERNAME = val
         elif opt in ["-h", "--host"]:
             PROXY_URI = val

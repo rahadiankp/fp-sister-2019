@@ -1,9 +1,8 @@
+# from project.transaction_manager.transaction_manager_api import TransactionManagerApi
 import getopt
 import sys
-
 import Pyro4
-
-from project.transaction_manager.transaction_manager_api import TransactionManagerApi
+import transaction_manager_api
 
 
 class TransactionManager:
@@ -16,7 +15,7 @@ class TransactionManager:
     def start(self):
         daemon = Pyro4.Daemon(host=self.host)
         ns = Pyro4.locateNS(self.host, self.port)
-        api = Pyro4.expose(TransactionManagerApi)
+        api = Pyro4.expose(transaction_manager_api.TransactionManagerApi)
         uri_tm = daemon.register(api)
         ns.register("{}" . format(self.name), uri_tm)
         print(uri_tm)

@@ -1,6 +1,7 @@
-from project.gameserver.boardserver import Board
+# from project.gameserver.boardserver import Board
 import Pyro4
 import Pyro4.errors
+import boardserver
 
 
 @Pyro4.behavior(instance_mode="single")
@@ -13,7 +14,7 @@ class TicTacToeServer(object):
     PIECES = ['X', 'O']
 
     def __init__(self, proxy_uri_list: list):
-        self.board_list = [Board(i, TicTacToeServer.PIECES, TicTacToeServer.WINPOS) for i in range(6)]
+        self.board_list = [boardserver.Board(i, TicTacToeServer.PIECES, TicTacToeServer.WINPOS) for i in range(6)]
         self.player_board_map = {}
         self.rm_proxy_list = [TicTacToeServer.connect_to_proxy(proxy_uri) for proxy_uri in proxy_uri_list]
         self.tm_proxy = None

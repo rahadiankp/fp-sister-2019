@@ -1,10 +1,11 @@
-from project.gameserver.tttserver import TicTacToeServer
+# from project.gameserver.tttserver import TicTacToeServer
 import Pyro4
+import tttserver
 
 
 def start_server(host: str, proxy_uri_list: list):
     daemon = Pyro4.Daemon(host=host)
-    tictactoe_server = TicTacToeServer(proxy_uri_list)
+    tictactoe_server = tttserver.TicTacToeServer(proxy_uri_list)
     uri = daemon.register(tictactoe_server)
     tictactoe_server.server_own_uri = uri
     print("Game Server is running on URI:")

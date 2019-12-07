@@ -1,7 +1,8 @@
-from project.proxy.proxy_server_api import ProxyServerApi
+# from project.proxy.proxy_server_api import ProxyServerApi
 import getopt
 import Pyro4
 import sys
+import proxy_server_api
 
 # pyro4-ns -n localhost -p 8888
 
@@ -9,8 +10,8 @@ import sys
 def start_proxy(tm_uri_list, name, host, port):
     daemon = Pyro4.Daemon(host=host)
     ns = Pyro4.locateNS(host, port)
-    proxy_server_api = ProxyServerApi(tm_uri_list)
-    uri_proxy = daemon.register(proxy_server_api)
+    proxy_server = proxy_server_api.ProxyServerApi(tm_uri_list)
+    uri_proxy = daemon.register(proxy_server)
     ns.register("{}" . format(name), uri_proxy)
     print(uri_proxy)
     daemon.requestLoop()
