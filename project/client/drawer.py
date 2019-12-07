@@ -106,8 +106,8 @@ class Drawer:
                 self.screen.blit(data[0], data[1])
 
     def draw_game_status(self):
-        self.status_surface = font.render(self.game_status_text, False, (0,0,0))
-        self.screen.blit(self.status_surface, (5, 100))
+        self.status_surface = self.font.render(self.game_status_text, False, (0,0,0))
+        self.screen.blit(self.status_surface, (100, 5))
 
     def get_pivot_pixel(self, pixel): # get pivot pixel (upper left) of board's rectangle
         x = ( (pixel[0] - self.GUIBOARD_LEFT) // self.GUIBOARD_RECTSIZE ) * self.GUIBOARD_RECTSIZE
@@ -216,8 +216,8 @@ class Drawer:
     def init_pygame(self):
         pygame.init()
         pygame.font.init()
-        self.font = pygame.font.Font(size=12)
-        self.status_surface = font.render(self.game_status_text, False, (0,0,0))
+        self.font = pygame.font.Font(None, 24)
+        self.status_surface = self.font.render(self.game_status_text, False, (0,0,0))
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode(self.RESOLUTION)
                 
