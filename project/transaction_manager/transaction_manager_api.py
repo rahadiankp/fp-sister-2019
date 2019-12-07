@@ -1,3 +1,5 @@
+import Pyro4
+
 
 class TransactionManagerApi:
 
@@ -8,6 +10,7 @@ class TransactionManagerApi:
     :type data: dict @see util.CommandResolver
     """
     @staticmethod
+    @Pyro4.oneway
     def push_command(command_data):
         TransactionManagerApi.data.append(command_data)
         TransactionManagerApi.data_len += 1
@@ -26,5 +29,5 @@ class TransactionManagerApi:
         return TransactionManagerApi.data[index:]
 
     @staticmethod
-    def ping(self):
+    def ping():
         return "PONG"

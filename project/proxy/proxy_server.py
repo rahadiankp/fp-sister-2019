@@ -6,10 +6,10 @@ import sys
 # pyro4-ns -n localhost -p 8888
 
 
-def start_proxy(tm_uri, name, host, port):
+def start_proxy(tm_uri_list, name, host, port):
     daemon = Pyro4.Daemon(host=host)
-    ns = Pyro4.locateNS(host,port)
-    proxy_server_api = ProxyServerApi(tm_uri)
+    ns = Pyro4.locateNS(host, port)
+    proxy_server_api = ProxyServerApi(tm_uri_list)
     uri_proxy = daemon.register(proxy_server_api)
     ns.register("{}" . format(name), uri_proxy)
     print(uri_proxy)
@@ -31,7 +31,10 @@ if __name__ == '__main__':
         elif opt in ["-p", "--port"]:
             PORT = int(val)
     print(NAME, HOST, PORT)
-    start_proxy('PYRONAME:transaction-manager@localhost:8888',
-                NAME,
-                HOST,
-                PORT)
+
+    tm_list = [
+        # 'PYRONAME:tm-1@localhost:8888',
+        'PYRONAME:tm-2@localhost:8888',
+        # 'PYRONAME:tm-3@localhost:8888'
+    ]
+    start_proxy(tm_list, NAME, HOST, PORT)

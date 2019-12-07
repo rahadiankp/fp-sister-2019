@@ -35,8 +35,10 @@ class TicTacToeServer(object):
                 raise Exception("Transaction Manager URI not matched")
 
         for proxy in self.rm_proxy_list:
+            tm_uri = proxy.get_transaction_manager_uri()
             try:
-                self.tm_proxy = TicTacToeServer.connect_to_proxy(proxy.get_transaction_manager_uri())
+                print(tm_uri)
+                self.tm_proxy = TicTacToeServer.connect_to_proxy(tm_uri)
                 break
             except Pyro4.errors.CommunicationError:
                 continue

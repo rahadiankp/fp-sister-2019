@@ -1,19 +1,21 @@
-from project.transaction_manager.transaction_manager_api import TransactionManagerApi
-from project.util.command_resolver import CommandResolver
+import threading
+import time
+
 import Pyro4
 import Pyro4.errors
-import time
-import threading
+
+from project.util.command_resolver import CommandResolver
 
 
 @Pyro4.behavior(instance_mode="single")
 class ProxyServerApi:
 
-    def __init__(self, tm_uri):
+    def __init__(self, tm_uri_list):
         self.non_transaction_command = ['CHECK', 'UPDATE']
 
-        self.tm_uri = tm_uri
-        self.tm: TransactionManagerApi = Pyro4.Proxy(tm_uri)
+        self.tm_uri_list = tm_uri_list
+        self.tm_list = [Pyro4.Proxy(uri) for uri in tm_uri_list]
+        # self.tm: TransactionManagerApi = Pyro4.Proxy(tm_uri_list)
 
         self.server_api_list = []
         self.last_index_call = 0
@@ -22,9 +24,21 @@ class ProxyServerApi:
 
         self.fail_response_no_server = {'status': 'FAILED', 'message': 'No servers available'}
 
+    def _push_to_tm(self, command):
+        tm_count = len(self.tm_list)
+
+        for i in range(tm_count):
+            self.tm_list[i].push_command(command)
+
     @Pyro4.expose
     def get_transaction_manager_uri(self):
-        return self.tm_uri
+        for i in range(len(self.tm_list)):
+            try:
+                self.tm_list[i].ping()
+                print(self.tm_uri_list)
+                return self.tm_uri_list[i]
+            except:
+                pass
 
     @Pyro4.expose
     def push_command(self, command: str):
@@ -54,7 +68,8 @@ class ProxyServerApi:
                     server_proxy.push_command(command_data)
 
                 if command_data['action'] not in self.non_transaction_command:
-                    self.tm.push_command(command_data)
+                    #self.tm.push_command(command_data)
+                    self._push_to_tm(command_data)
 
                 return server_response
             else:
