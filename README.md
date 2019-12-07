@@ -25,7 +25,7 @@ Node ini adalah player dari game Tic-Tac-Toe. Saat menaruh bidak, node ini mengi
 - `WIN`: Pemain menaruh bidak di suatu sel, dan pemain tersebut juga menang
 - `LOSE`: Pemain lawan menaruh bidak di suatu sel, dan pemain ini kalah  
 Setelah pemainan berakhir (kedua pemain menerima pesan `WIN` atau `LOSE`), maka pemain nomer 1 akan mengirimkan pesan `END` ke server sebagai pnenanda pemain berakhir dan *board* dapat dibersihkan
-#### Proxy/Replication Manager
+#### Proxy
 Node ini sebagai jembatan klien ke server game. Node ini bertugas untuk menentukan koneksi klien ke salah satu server yang tersedia. Selain itu, node ini akan mendistribusikan perintah yang dikirimkan oleh klien ke seluruh server. Perintah dari klien tersebut juga akan dikirimkan ke Transactions Manager. Node ini juga bertugas untuk meneruskan respon dari Game Master ke klien
 #### Transactions Manager
 Node ini bertugas untuk menyimpan seluruh perintah/instruksi/transaksi yang pernah di-*request* oleh klien dan didistribusikan kepada Server. Format data transaksi yang disimpan adalah `<INDEX_NUM> <INSTRUCTION>`, contohnya:
@@ -36,7 +36,7 @@ Node ini bertugas untuk menyimpan seluruh perintah/instruksi/transaksi yang pern
 4 PUT userNomerDua 1 1,2
 ...
 ```
-#### Game Master
+#### Game Server/Replication Manager
 Node ini tempat di mana *state* game berada dan proses yang berkaitan dengan jalannya game
 ### Data Consistency Protocol
 #### Replication
@@ -56,9 +56,6 @@ Node ini tempat di mana *state* game berada dan proses yang berkaitan dengan jal
 8. *Recovery* sudah sukses dilaksanakan, Server menyatakan dirinya READY dan siap untuk menerima koneksi
 
 ### Visualisasi
-#### Dependensi
-- PyGame
-
 #### Rancangan Tampilan
 - Papan permainan
     - Satu permainan akan dilakukan pada satu bagian papan permainan, dipisahkan berdasarkan warna untuk mempermudah pemain mengetahui papan permainan yang digunakan.
