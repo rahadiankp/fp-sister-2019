@@ -12,6 +12,5 @@ class TransactionManager:
         print(uri_tm)
         daemon.requestLoop()
 
-
 if __name__ == '__main__':
     TransactionManager().start()
