@@ -179,13 +179,34 @@ class Drawer:
             check_response: dict = self.proxy.push_command("CHECK " + self.username + " " + self.board_id)
             prefix_title = check_response['message']
             # text for status
-            self.game_status_text = check_response['message']
+            self.game_status_text = self.get_status_message(check_response['message'])
             if prefix_title.split()[0] in stop_response:
                 self.proxy.push_command("RPOL " + self.username + " " + self.board_id)
-                self.update_running = False
+                time.sleep(1)
                 pygame.event.post(pygame.event.Event(pygame.QUIT, {}))
                 break
-            # pygame.display.set_caption(self.title + " - " + prefix_title)
+
+    def get_status_message(self, message):
+        command = message.split()[0]
+        if command == "NTRN":
+            return "Wait for turn..."
+        elif command == "TURN":
+            return "Place your piece..."
+        elif command == "NPLYR":
+            return "Not part of the board, can not make a move..."
+        elif command == "NST":
+            return "Game not started yet, please wait for opponent..."
+        elif command == "DRAW":
+            return "DRAW! Exiting Game..."
+        elif command == "BAD":
+            return "Place somewhere else!"
+        elif command == "WIN":
+            player_id = message.split()[2]
+            if int(player_id) == self.player_id:
+                return "YOU WIN! Exiting Game..."
+            return "YOU LOSE! Exiting Game..."
+        else:
+            return "WEIRD MESSAGE"
 
     def position_to_pixel(self, coordinate):
         col = coordinate[0] - 1
@@ -219,6 +240,7 @@ class Drawer:
         put_response = self.proxy.push_command(cmd)
         if put_response['status'] != "OK":
             print(put_response['message'])
+            self.game_status_text = self.get_status_message(put_response['message'])
             return
         piece = put_response['message'].split()[1]
         self.board.board_data[coordinate[1]-1][coordinate[0]-1] = piece

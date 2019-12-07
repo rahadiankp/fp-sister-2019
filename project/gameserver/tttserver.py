@@ -177,9 +177,12 @@ class TicTacToeServer(object):
                 'message': 'Invalid board id'
             }
 
-        # board = self.board_list[board_id]
+        board = self.board_list[board_id]
         try:
-            # board.player_name_list.remove(username)
+            board.player_name_list.remove(username)
+        except ValueError:
+            pass
+        try:
             self.player_board_map.pop(username)
             return {
                 'status': 'OK',
