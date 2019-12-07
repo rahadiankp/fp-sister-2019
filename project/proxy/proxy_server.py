@@ -34,8 +34,8 @@ if __name__ == '__main__':
     print(NAME, HOST, PORT)
 
     tm_list = [
-        # 'PYRONAME:tm-1@localhost:8888',
+        'PYRONAME:tm-1@localhost:8888',
         'PYRONAME:tm-2@localhost:8888',
-        # 'PYRONAME:tm-3@localhost:8888'
+        'PYRONAME:tm-3@localhost:8888'
     ]
     start_proxy(tm_list, NAME, HOST, PORT)

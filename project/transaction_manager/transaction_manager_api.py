@@ -1,4 +1,5 @@
 import Pyro4
+import hashlib
 
 
 class TransactionManagerApi:
@@ -31,3 +32,23 @@ class TransactionManagerApi:
     @staticmethod
     def ping():
         return "PONG"
+
+    """Debug methods
+
+    """
+
+    @staticmethod
+    def verbose_server():
+        length = TransactionManagerApi.data_len
+        length_data = len(TransactionManagerApi.data)
+        hash_value = hashlib.md5("EMPTY TRANSACTION".encode())
+        for data in TransactionManagerApi.data:
+            print(data)
+            hash_value = hashlib.md5((hash_value.hexdigest() + str(data)).encode())
+
+        return {
+            'len': length,
+            'len_data': length_data,
+            'hash': hash_value.hexdigest(),
+        }
+
