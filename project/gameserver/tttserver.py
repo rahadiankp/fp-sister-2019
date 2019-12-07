@@ -1,7 +1,6 @@
 from project.gameserver.boardserver import Board
 import Pyro4
-
-from project.transaction_manager.transaction_manager_api import TransactionManagerApi
+import Pyro4.errors
 
 
 @Pyro4.behavior(instance_mode="single")
@@ -13,10 +12,10 @@ class TicTacToeServer(object):
     ]
     PIECES = ['X', 'O']
 
-    def __init__(self, rm_proxy_uri):
+    def __init__(self, proxy_uri_list: list):
         self.board_list = [Board(i, TicTacToeServer.PIECES, TicTacToeServer.WINPOS) for i in range(6)]
         self.player_board_map = {}
-        self.rm_proxy = TicTacToeServer.connect_to_proxy(rm_proxy_uri)
+        self.rm_proxy_list = [TicTacToeServer.connect_to_proxy(proxy_uri) for proxy_uri in proxy_uri_list]
         self.tm_proxy = None
         self.server_own_uri = ""
         self.is_ready = False
@@ -28,7 +27,23 @@ class TicTacToeServer(object):
         return proxy
 
     def connect_to_tm(self):
-        self.tm_proxy: TransactionManagerApi = TicTacToeServer.connect_to_proxy(self.rm_proxy.get_transaction_manager_uri())
+        # agree to only 1 tm uri
+        tm_uri = self.rm_proxy_list[0].get_transaction_manager_uri()
+        for i in range(1, len(self.rm_proxy_list)):
+            tm_uri_temp = self.rm_proxy_list[i].get_transaction_manager_uri()
+            if tm_uri != tm_uri_temp:
+                raise Exception("Transaction Manager URI not matched")
+
+        for proxy in self.rm_proxy_list:
+            try:
+                self.tm_proxy = TicTacToeServer.connect_to_proxy(proxy.get_transaction_manager_uri())
+                break
+            except Pyro4.errors.CommunicationError:
+                continue
+
+        if not self.tm_proxy:
+            raise Exception("No available Transaction Manager proxy connected")
+
         up_to_date = False
         self.is_ready = False
         from_index = 0
@@ -49,7 +64,8 @@ class TicTacToeServer(object):
         self.is_ready = True
 
     def register_to_rm(self):
-        self.rm_proxy.register_server(self.server_own_uri)
+        for proxy in self.rm_proxy_list:
+            proxy.register_server(self.server_own_uri)
 
     @Pyro4.expose
     def get_uri(self):
@@ -159,9 +175,9 @@ class TicTacToeServer(object):
                 'message': 'Invalid board id'
             }
 
-        board = self.board_list[board_id]
+        # board = self.board_list[board_id]
         try:
-            board.player_name_list.remove(username)
+            # board.player_name_list.remove(username)
             self.player_board_map.pop(username)
             return {
                 'status': 'OK',

@@ -1,6 +1,7 @@
 from project.transaction_manager.transaction_manager_api import TransactionManagerApi
 from project.util.command_resolver import CommandResolver
 import Pyro4
+import Pyro4.errors
 import time
 import threading
 
@@ -35,7 +36,8 @@ class ProxyServerApi:
         command_data = CommandResolver.resolve_command(command)
         last_index_call = self.last_index_call
         self.last_index_call += 1
-        # print(command_data)
+        if command_data['action'] not in self.non_transaction_command:
+            print("Recvd command:", command_data)
         if self.last_index_call >= len(self.server_api_list):
             self.last_index_call = 0
 
@@ -103,7 +105,8 @@ class ProxyServerApi:
             try:
                 proxy = Pyro4.Proxy(game_server_uri)
                 ping_response = proxy.ping()
-            except Exception as e:
+            except Pyro4.errors.CommunicationError as e:
+                print(e)
                 break
         self.remove_server(game_server_uri)
 
