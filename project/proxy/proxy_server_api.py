@@ -13,7 +13,7 @@ class ProxyServerApi:
     def __init__(self, tm_uri_list):
         self.non_transaction_command = ['CHECK', 'UPDATE']
 
-        self.tm_uri = tm_uri_list
+        self.tm_uri_list = tm_uri_list
         self.tm_list = [Pyro4.Proxy(uri) for uri in tm_uri_list]
         # self.tm: TransactionManagerApi = Pyro4.Proxy(tm_uri_list)
 
@@ -32,10 +32,11 @@ class ProxyServerApi:
 
     @Pyro4.expose
     def get_transaction_manager_uri(self):
-        for tm in self.tm_list:
+        for i in range(len(self.tm_list)):
             try:
-                tm.ping()
-                return tm
+                self.tm_list[i].ping()
+                print(self.tm_uri_list)
+                return self.tm_uri_list[i]
             except:
                 pass
 

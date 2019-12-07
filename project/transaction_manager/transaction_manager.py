@@ -37,5 +37,5 @@ if __name__ == '__main__':
             HOST = val
         elif opt in ["-p", "--port"]:
             PORT = int(val)
-        TransactionManager(NAME, HOST, PORT).start()
+    TransactionManager(NAME, HOST, PORT).start()
 
