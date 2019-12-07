@@ -207,7 +207,7 @@ class Drawer:
         coordinate = self.position_to_coordinate(pixel)
 
         # out of board mouse click
-        if coordinate[0] < 1 or coordinate[0] > 9 or coordinate[1] < 1 or coordinate[1] > 9:
+        if coordinate[0] < 1 or coordinate[0] > 9 or coordinate[1] < 1 or coordinate[1] > 6:
             return
 
         # generate command string here (to be saved to TM)
