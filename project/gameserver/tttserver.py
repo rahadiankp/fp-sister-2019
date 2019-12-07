@@ -225,12 +225,11 @@ class TicTacToeServer(object):
 
     @Pyro4.expose
     def verbose_server(self):
-        result = []
+        player_list = []
         for board in self.board_list:
-            a = dict()
-            a["player_1"] = board.player_name_list[0] if len(board.player_name_list) > 0 else None
-            a["player_2"] = board.player_name_list[1] if len(board.player_name_list) > 1 else None
-            a["board_data"] = board.board_data
-            result.append(a)
+            player_list.append(tuple(player for player in board.player_name_list))
 
-        return result
+        return {
+            'player_list': player_list,
+            'board_state': self.handle_update()['data']
+        }
