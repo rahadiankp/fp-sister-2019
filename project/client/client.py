@@ -2,6 +2,7 @@ import Pyro4
 from project.client.board import Board
 from project.client.drawer import Drawer
 
+
 class Client:
     
     board = None
@@ -13,15 +14,13 @@ class Client:
         self.proxy = Pyro4.Proxy(proxy_uri)
         register_response: dict = self.proxy.push_command("START " + username)
         if register_response['status'] != "OK":
-            print(register_response['message'])
-            return
+            raise Exception(register_response['message'])
         self.board_id = register_response['board_id']
         self.player_id = register_response['player_id']
         latest_board: dict = self.proxy.push_command("UPDATE")
         print(latest_board)
         self.board = Board(latest_board['data'])
         self.drawer = Drawer(self.board, self.username, str(self.board_id), self.player_id, self.proxy)
-
 
     def start(self):
         self.drawer.update_screen()

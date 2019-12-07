@@ -1,7 +1,9 @@
-import Pyro4
-
 from project.transaction_manager.transaction_manager_api import TransactionManagerApi
 from project.util.command_resolver import CommandResolver
+import Pyro4
+import Pyro4.errors
+import time
+import threading
 
 
 @Pyro4.behavior(instance_mode="single")
@@ -16,6 +18,8 @@ class ProxyServerApi:
         self.server_api_list = []
         self.last_index_call = 0
 
+        self.game_server_failure_detection_thread = {}
+
         self.fail_response_no_server = {'status': 'FAILED', 'message': 'No servers available'}
 
     @Pyro4.expose
@@ -28,7 +32,8 @@ class ProxyServerApi:
         command_data = CommandResolver.resolve_command(command)
         last_index_call = self.last_index_call
         self.last_index_call += 1
-        # print(command_data)
+        if command_data['action'] not in self.non_transaction_command:
+            print("Recvd command:", command_data)
         if self.last_index_call >= len(self.server_api_list):
             self.last_index_call = 0
 
@@ -39,12 +44,14 @@ class ProxyServerApi:
             return self.fail_response_no_server
 
         try:
-            server_response = self.server_api_list[last_index_call].push_command(command_data)
+            server_proxy_last = Pyro4.Proxy(self.server_api_list[last_index_call])
+            server_response = server_proxy_last.push_command(command_data)
             if server_response['status'] == 'OK':
-                for i, server in enumerate(self.server_api_list):
+                for i, server_uri in enumerate(self.server_api_list):
+                    server_proxy = Pyro4.Proxy(server_uri)
                     if i == last_index_call:
                         continue
-                    server.push_command(command_data)
+                    server_proxy.push_command(command_data)
 
                 if command_data['action'] not in self.non_transaction_command:
                     self.tm.push_command(command_data)
@@ -67,6 +74,36 @@ class ProxyServerApi:
     @Pyro4.expose
     def register_server(self, server_uri):
         self.server_api_list.append(
-            Pyro4.Proxy(server_uri)
+            server_uri
         )
+
+        # start ping failure detection thread
+        pfd = threading.Thread(target=self.ping_game_server, args=(server_uri,))
+        self.game_server_failure_detection_thread[server_uri] = pfd
+        pfd.start()
+
         print('Registered -', server_uri)
+
+    def remove_server(self, server_uri):
+        print("Failure Detector has detected", server_uri, "is down")
+
+        # join pfd thread to main thread
+        # pfd_t = self.game_server_failure_detection_thread[server_uri]
+        # pfd_t.join()
+
+        self.last_index_call = 0
+        self.server_api_list.remove(server_uri)
+        print("Unregistered -", server_uri)
+
+    def ping_game_server(self, game_server_uri: str):
+        print("Monitoring -", game_server_uri)
+        while True:
+            time.sleep(2)
+            try:
+                proxy = Pyro4.Proxy(game_server_uri)
+                ping_response = proxy.ping()
+            except Pyro4.errors.CommunicationError as e:
+                print(e)
+                break
+        self.remove_server(game_server_uri)
+
