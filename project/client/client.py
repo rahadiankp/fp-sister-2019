@@ -1,6 +1,8 @@
-import Pyro4
 from project.client.board import Board
 from project.client.drawer import Drawer
+import getopt
+import sys
+import Pyro4
 
 
 class Client:
@@ -27,7 +29,18 @@ class Client:
 
 
 if __name__ == "__main__":
-    client = Client("receh", "PYRONAME:proxyserver-3@localhost:8888")
+    USERNAME = ""
+    PROXY_URI = ""
+
+    options, misc = getopt.getopt(sys.argv[1:], "u:h:",
+                                  ["username=", "host="])
+    for opt, val in options:
+        if opt in ["-n", "--name"]:
+            USERNAME = val
+        elif opt in ["-h", "--host"]:
+            PROXY_URI = val
+    client = Client(USERNAME, PROXY_URI)
+    # client = Client("receh", "PYRONAME:proxyserver-3@localhost:8888")
     # client = Client("alcredo", "PYRONAME:proxyserver-1@localhost:8888")
     # client = Client("teje", "PYRONAME:proxyserver-2@localhost:8888")
     # client = Client("alfian", "PYRONAME:proxyserver-1@localhost:8888")
