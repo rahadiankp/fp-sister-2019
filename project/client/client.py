@@ -27,5 +27,8 @@ class Client:
 
 
 if __name__ == "__main__":
-    client = Client("asd", "PYRONAME:proxyserver@localhost:8888")
+    client = Client("receh", "PYRONAME:proxyserver-3@localhost:8888")
+    # client = Client("alcredo", "PYRONAME:proxyserver-1@localhost:8888")
+    # client = Client("teje", "PYRONAME:proxyserver-2@localhost:8888")
+    # client = Client("alfian", "PYRONAME:proxyserver-1@localhost:8888")
     client.start()

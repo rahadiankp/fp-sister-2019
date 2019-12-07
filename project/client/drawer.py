@@ -88,15 +88,23 @@ class Drawer:
         self.resource.update({'board': pygame.image.load('assets/board.png')})
         self.resource.update({'O': pygame.image.load('assets/red_o.png')})
         self.resource.update({'X': pygame.image.load('assets/blue_x.png')})
+        for i in range(0,6):
+            asset_name = 'assets/play' + str(i) + '.png'
+            self.resource.update({'board_dim_'+str(i) : pygame.image.load(asset_name)})
 
     def draw(self): # will be threaded
         self.draw_board()
         self.draw_piece()
         # create function for every feature to be drawn
         self.draw_game_status()
+        self.draw_dim()
 
     def draw_board(self): # draw visualization of board without piece
         self.screen.blit(self.resource['board'], (0, 0))
+
+    def draw_dim(self):
+        dim_str = 'board_dim_' + str(self.board_id)
+        self.screen.blit(self.resource[dim_str], (0, 0))
 
     def draw_piece(self): # draw board's piece
         for row in self.drawn:
