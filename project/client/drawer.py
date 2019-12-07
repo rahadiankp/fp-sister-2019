@@ -15,6 +15,7 @@ class Drawer:
 
     board = None
     is_turn = False
+    game_status_text = ''
 
     # pygame
     # pygame config, used for game setting
@@ -25,6 +26,7 @@ class Drawer:
     resource = None
     my_piece = None
     drawn = None
+    status_surface = None
     # end of pygame variable
 
     def __init__(self, board, username: str, board_id: str, player_id: int, proxy):
@@ -33,6 +35,7 @@ class Drawer:
         self.board_id = board_id
         self.player_id = player_id
         self.proxy = proxy
+        self.game_status_text = "Waiting for enemy move"
 
         player_num = "1st Player" if self.player_id == 0 else "2nd Player"
         self.title = "TicTacToe - " + username + " - Board " + board_id + " - " + player_num
@@ -90,6 +93,7 @@ class Drawer:
         self.draw_board()
         self.draw_piece()
         # create function for every feature to be drawn
+        self.draw_game_status()
 
     def draw_board(self): # draw visualization of board without piece
         self.screen.blit(self.resource['board'], (0, 0))
@@ -100,6 +104,10 @@ class Drawer:
                 if data[0] == '-' or data[1] == None:
                     continue
                 self.screen.blit(data[0], data[1])
+
+    def draw_game_status(self):
+        self.status_surface = font.render(self.game_status_text, False, (0,0,0))
+        self.screen.blit(self.status_surface, (5, 100))
 
     def get_pivot_pixel(self, pixel): # get pivot pixel (upper left) of board's rectangle
         x = ( (pixel[0] - self.GUIBOARD_LEFT) // self.GUIBOARD_RECTSIZE ) * self.GUIBOARD_RECTSIZE
@@ -162,6 +170,8 @@ class Drawer:
             time.sleep(2)
             check_response: dict = self.proxy.push_command("CHECK " + self.username + " " + self.board_id)
             prefix_title = check_response['message']
+            # text for status
+            self.game_status_text = check_response['message']
             if prefix_title.split()[0] in stop_response:
                 self.proxy.push_command("RPOL " + self.username + " " + self.board_id)
                 self.update_running = False
@@ -205,6 +215,9 @@ class Drawer:
     # set pygame config
     def init_pygame(self):
         pygame.init()
+        pygame.font.init()
+        self.font = pygame.font.Font(size=12)
+        self.status_surface = font.render(self.game_status_text, False, (0,0,0))
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode(self.RESOLUTION)
                 
