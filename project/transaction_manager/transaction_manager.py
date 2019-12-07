@@ -1,8 +1,6 @@
 import Pyro4
 
 from project.transaction_manager.transaction_manager_api import TransactionManagerApi
-
-
 class TransactionManager:
 
     def start(self):
