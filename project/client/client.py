@@ -5,6 +5,7 @@ import sys
 import Pyro4
 import board
 import drawer
+import start_scene
 
 
 class Client:
@@ -43,6 +44,11 @@ if __name__ == "__main__":
     PROXY_URI = ""
     SPECTATOR = False
 
+    main_screen = start_scene.StartScene()
+    main_screen.start_scene()
+    username = main_screen.get_username()
+    uri = "PYRONAME:proxyserver-3@localhost:8888"
+
     options, misc = getopt.getopt(sys.argv[1:], "u:h:s",
                                   ["username=", "host=", "spectator"])
     for opt, val in options:
@@ -50,6 +56,8 @@ if __name__ == "__main__":
             USERNAME = val
         elif opt in ["-h", "--host"]:
             PROXY_URI = val
+        elif opt in ["-s", "--spectator"]:
+            SPECTATOR = True
         elif opt in ["-s", "--spectator"]:
             SPECTATOR = True
     client = Client(USERNAME, PROXY_URI, SPECTATOR)
