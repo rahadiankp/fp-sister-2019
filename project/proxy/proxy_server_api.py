@@ -21,7 +21,7 @@ class ProxyServerApi:
 
         self.game_server_failure_detection_thread = {}
 
-        self.fail_response_no_server = {'status': 'FAILED', 'message': 'No servers available'}
+        self.fail_response_no_server = {'status': 'FAILED', 'message': 'NSRV No servers available'}
 
     def _push_to_tm(self, command):
         tm_count = len(self.tm_list)

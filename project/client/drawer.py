@@ -168,16 +168,21 @@ class Drawer:
     def update_board_threaded(self):
         while self.update_running:
             time.sleep(0.5)
-            self.drawn = self.proxy.push_command("UPDATE")['data']
-
-            self.init_drawn()
+            try:
+                self.drawn = self.proxy.push_command("UPDATE")['data']
+                self.init_drawn()
+            except:
+                pass
 
     def check_board_thread(self):
         stop_response = ["DRAW", "WIN"]
         while self.check_running:
             time.sleep(2)
-            check_response: dict = self.proxy.push_command("CHECK " + self.username + " " + self.board_id)
-            prefix_title = check_response['message']
+            try:
+                check_response: dict = self.proxy.push_command("CHECK " + self.username + " " + self.board_id)
+                prefix_title = check_response['message']
+            except:
+                continue
             # text for status
             self.game_status_text = self.get_status_message(check_response['message'])
             if prefix_title.split()[0] in stop_response:
@@ -205,6 +210,8 @@ class Drawer:
             if int(player_id) == self.player_id:
                 return "YOU WIN! Exiting Game..."
             return "YOU LOSE! Exiting Game..."
+        elif command == "NSRV":
+            return "Connection to server lost..."
         else:
             return "WEIRD MESSAGE"
 
