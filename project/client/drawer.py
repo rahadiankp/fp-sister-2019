@@ -38,9 +38,13 @@ class Drawer:
         self.game_status_text = "Welcome to Dic-Dac-Doe!"
         self.spectator_mode = spectator_mode
 
-        player_num = "1st Player" if self.player_id == 0 else "2nd Player"
+        # player_num = "1st Player" if self.player_id == 0 else "2nd Player"
         if spectator_mode:
             player_num = "Spectator"
+        elif self.player_id == 0:
+            player_num = "1st Player"
+        elif self.player_id == 1:
+            player_num = "2nd Player"
         self.title = "TicTacToe - " + username + " - Board " + board_id + " - " + player_num
 
         # need self.drawn initialization here
