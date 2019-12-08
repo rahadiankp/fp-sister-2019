@@ -15,6 +15,8 @@ def start_mock_client(uri_list: list):
         for proxy in proxy_list:
             print("Server", idx)
             result = proxy.verbose_server()
+            print(result['is_ready'])
+            print(result['hash'])
             for i in range(2):
                 print(result['player_list'][3*i], "||",
                       result['player_list'][3*i+1], "||",
