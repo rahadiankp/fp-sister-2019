@@ -45,6 +45,11 @@ if __name__ == "__main__":
     main_screen.start_scene()
     username = main_screen.get_username()
     spectator_mode = main_screen.is_spectator_mode()
+
+    if not username:
+        print("Exiting...")
+        sys.exit()
+
     uri = "PYRONAME:proxyserver-3@localhost:8888"
 
     options, misc = getopt.getopt(sys.argv[1:], "h:", ["host="])
