@@ -14,14 +14,17 @@ class Client:
 
     def __init__(self, username, proxy_uri):
         self.username = username
-        self.proxy = Pyro4.Proxy(proxy_uri)
+        try:
+            self.proxy = Pyro4.Proxy(proxy_uri)
+        except:
+            print("Invalid URI")
+            return
         register_response: dict = self.proxy.push_command("START " + username)
         if register_response['status'] != "OK":
             raise Exception(register_response['message'])
         self.board_id = register_response['board_id']
         self.player_id = register_response['player_id']
         latest_board: dict = self.proxy.push_command("UPDATE")
-        print(latest_board)
         self.board = board.Board(latest_board['data'])
         self.drawer = drawer.Drawer(self.board, self.username, str(self.board_id), self.player_id, self.proxy)
 
@@ -40,9 +43,9 @@ if __name__ == "__main__":
             USERNAME = val
         elif opt in ["-h", "--host"]:
             PROXY_URI = val
-    client = Client(USERNAME, PROXY_URI)
+    # client = Client(USERNAME, PROXY_URI)
     # client = Client("receh", "PYRONAME:proxyserver-3@localhost:8888")
-    # client = Client("alcredo", "PYRONAME:proxyserver-1@localhost:8888")
+    client = Client("alcredo", "PYRONAME:proxyserver-1@localhost:8888")
     # client = Client("teje", "PYRONAME:proxyserver-2@localhost:8888")
     # client = Client("alfian", "PYRONAME:proxyserver-1@localhost:8888")
     client.start()

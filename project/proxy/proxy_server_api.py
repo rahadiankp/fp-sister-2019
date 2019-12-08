@@ -64,13 +64,9 @@ class ProxyServerApi:
                     server_proxy = Pyro4.Proxy(server_uri)
                     if i == last_index_call:
                         continue
-                    check_ready_response = server_proxy.check_ready()
-                    if not check_ready_response:
-                        continue
                     server_proxy.push_command(command_data)
 
                 if command_data['action'] not in self.non_transaction_command:
-                    #self.tm.push_command(command_data)
                     self._push_to_tm(command_data)
 
                 return server_response

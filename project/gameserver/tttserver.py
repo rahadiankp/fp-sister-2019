@@ -80,7 +80,8 @@ class TicTacToeServer(object):
         # print(command_data)
         if not self.is_ready and not is_fail_over:
             return {
-                'status': 'NOT_READY'
+                'status': 'FAILED',
+                'message': 'Server is synchronizing'
             }
         action = command_data['action']
         board_id = command_data.get('board_id')
@@ -219,10 +220,6 @@ class TicTacToeServer(object):
     @Pyro4.expose
     def ping(self):
         return "PONG"
-
-    @Pyro4.expose
-    def check_ready(self):
-        return self.is_ready
 
     """Debug methods
     
