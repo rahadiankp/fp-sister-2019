@@ -18,8 +18,7 @@ class Client:
         try:
             self.proxy = Pyro4.Proxy(proxy_uri)
         except:
-            print("Invalid URI")
-            return
+            raise Exception("Invalid URI")
         if not spectator_mode:
             register_response: dict = self.proxy.push_command("START " + username)
             if register_response['status'] != "OK":
@@ -40,27 +39,21 @@ class Client:
 
 
 if __name__ == "__main__":
-    USERNAME = ""
     PROXY_URI = ""
-    SPECTATOR = False
 
     main_screen = start_scene.StartScene()
     main_screen.start_scene()
     username = main_screen.get_username()
+    spectator_mode = main_screen.is_spectator_mode()
     uri = "PYRONAME:proxyserver-3@localhost:8888"
 
-    options, misc = getopt.getopt(sys.argv[1:], "u:h:s",
-                                  ["username=", "host=", "spectator"])
+    options, misc = getopt.getopt(sys.argv[1:], "h:", ["host="])
+
     for opt, val in options:
-        if opt in ["-u", "--username"]:
-            USERNAME = val
-        elif opt in ["-h", "--host"]:
+        if opt in ["-h", "--host"]:
             PROXY_URI = val
-        elif opt in ["-s", "--spectator"]:
-            SPECTATOR = True
-        elif opt in ["-s", "--spectator"]:
-            SPECTATOR = True
-    client = Client(USERNAME, PROXY_URI, SPECTATOR)
+
+    client = Client(username, uri, spectator_mode)
     # client = Client("receh", "PYRONAME:proxyserver-3@localhost:8888")
     # client = Client("alcredo", "PYRONAME:proxyserver-1@localhost:8888")
     # client = Client("teje", "PYRONAME:proxyserver-2@localhost:8888")
