@@ -29,15 +29,22 @@ class Drawer:
     status_surface = None
     # end of pygame variable
 
-    def __init__(self, board, username: str, board_id: str, player_id: int, proxy):
+    def __init__(self, board, username: str, board_id: str, player_id: int, proxy, spectator_mode):
         self.board = board
         self.username = username
         self.board_id = board_id
         self.player_id = player_id
         self.proxy = proxy
         self.game_status_text = "Welcome to Dic-Dac-Doe!"
+        self.spectator_mode = spectator_mode
 
-        player_num = "1st Player" if self.player_id == 0 else "2nd Player"
+        # player_num = "1st Player" if self.player_id == 0 else "2nd Player"
+        if spectator_mode:
+            player_num = "Spectator"
+        elif self.player_id == 0:
+            player_num = "1st Player"
+        elif self.player_id == 1:
+            player_num = "2nd Player"
         self.title = "TicTacToe - " + username + " - Board " + board_id + " - " + player_num
 
         # need self.drawn initialization here
@@ -51,9 +58,10 @@ class Drawer:
         self.update_thread = threading.Thread(target=self.update_board_threaded)
         self.update_thread.start()
 
-        self.check_running = True
-        self.check_thread = threading.Thread(target=self.check_board_thread)
-        self.check_thread.start()
+        if not self.spectator_mode:
+            self.check_running = True
+            self.check_thread = threading.Thread(target=self.check_board_thread)
+            self.check_thread.start()
 
     def update_screen(self):
         running = True
@@ -63,12 +71,15 @@ class Drawer:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         # event unregister
-                        unregister_response = self.proxy.push_command(
-                            "UNREGISTER " + self.username + " " + self.board_id)
+                        unregister_response = None
+                        if not self.spectator_mode:
+                            unregister_response = self.proxy.push_command(
+                                "UNREGISTER " + self.username + " " + self.board_id)
                         self.update_running = False
                         self.update_thread.join()
-                        self.check_running = False
-                        # self.check_thread.join()
+                        if not self.spectator_mode:
+                            self.check_running = False
+                            self.check_thread.join()
                         running = False
                         break
                     
@@ -103,6 +114,8 @@ class Drawer:
         self.screen.blit(self.resource['board'], (0, 0))
 
     def draw_dim(self):
+        if self.spectator_mode:
+            return
         dim_str = 'board_dim_' + str(self.board_id)
         self.screen.blit(self.resource[dim_str], (0, 0))
 
@@ -232,6 +245,8 @@ class Drawer:
         return [col, row]
     
     def place_piece(self, pixel):
+        if self.spectator_mode:
+            return
         coordinate = self.position_to_coordinate(pixel)
 
         # out of board mouse click

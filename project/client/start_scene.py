@@ -9,9 +9,9 @@ class StartScene:
         self.username = ''
         self.spectate_mode = False
         self.username_rect = pygame.rect.Rect(150, 250, 350, 80)
-        self.start_rect = pygame.rect.Rect(40, 410, 260, 60)
-        self.spectate_rect = pygame.rect.Rect(40, 480, 260, 60)
-        self.quit_rect = pygame.rect.Rect(40, 550, 260, 60)
+        self.start_rect = pygame.rect.Rect(60, 380, 260, 60)
+        self.spectate_rect = pygame.rect.Rect(350, 380, 260, 60)
+        self.quit_rect = pygame.rect.Rect(255, 550, 260, 60)
         self.boxcolor = pygame.Color('black')
         self.load_resource()
 
@@ -28,7 +28,7 @@ class StartScene:
         pygame.draw.rect(self.screen, self.boxcolor, self.quit_rect, 8)
 
         username_surface = pygame.font.Font(None, 64).render(self.username, True, pygame.Color('black'))
-        start_surface = pygame.font.Font(None, 64).render('START', True, pygame.Color('white'))
+        start_surface = pygame.font.Font(None, 64).render('PLAY', True, pygame.Color('white'))
         spectate_surface = pygame.font.Font(None, 64).render('SPECTATE', True, pygame.Color('white'))
         quit_surface = pygame.font.Font(None, 64).render('QUIT', True, pygame.Color('white'))
 
@@ -83,11 +83,13 @@ class StartScene:
                         return 0
 
                     if self.start_rect.collidepoint(mousepos):
-                        return 0
+                        if self.username:
+                            return 0
 
                     if self.spectate_rect.collidepoint(mousepos):
-                        self.spectate_mode = True
-                        return 0
+                        if self.username:
+                            self.spectate_mode = True
+                            return 0
 
                 if is_username:
                     if event.type == pygame.KEYUP:
