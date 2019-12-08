@@ -39,8 +39,6 @@ class Client:
 
 
 if __name__ == "__main__":
-    PROXY_URI = ""
-
     main_screen = start_scene.StartScene()
     main_screen.start_scene()
     username = main_screen.get_username()
@@ -50,7 +48,9 @@ if __name__ == "__main__":
         print("Exiting...")
         sys.exit()
 
-    uri = "PYRONAME:proxyserver-3@localhost:8888"
+    PROXY_URI = "PYRONAME:proxyserver-1@localhost:8888"
+    # PROXY_URI = "PYRONAME:proxyserver-2@localhost:8888"
+    # PROXY_URI = "PYRONAME:proxyserver-3@localhost:8888"
 
     options, misc = getopt.getopt(sys.argv[1:], "h:", ["host="])
 
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         if opt in ["-h", "--host"]:
             PROXY_URI = val
 
-    client = Client(username, uri, spectator_mode)
+    client = Client(username, PROXY_URI, spectator_mode)
     # client = Client("receh", "PYRONAME:proxyserver-3@localhost:8888")
     # client = Client("alcredo", "PYRONAME:proxyserver-1@localhost:8888")
     # client = Client("teje", "PYRONAME:proxyserver-2@localhost:8888")
