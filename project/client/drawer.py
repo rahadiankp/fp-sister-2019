@@ -35,7 +35,7 @@ class Drawer:
         self.board_id = board_id
         self.player_id = player_id
         self.proxy = proxy
-        self.game_status_text = "Waiting for enemy move"
+        self.game_status_text = "Welcome to Dic-Dac-Doe!"
 
         player_num = "1st Player" if self.player_id == 0 else "2nd Player"
         self.title = "TicTacToe - " + username + " - Board " + board_id + " - " + player_num

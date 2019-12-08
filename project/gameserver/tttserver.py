@@ -5,7 +5,7 @@ import hashlib
 import boardserver
 
 
-@Pyro4.behavior(instance_mode="single")
+@Pyro4.behavior(instance_mode="session")
 class TicTacToeServer(object):
     WINPOS = [
         ((0, 0), (0, 1), (0, 2)), ((1, 0), (1, 1), (1, 2)), ((2, 0), (2, 1), (2, 2)),  # HORIZONTAL
@@ -219,6 +219,10 @@ class TicTacToeServer(object):
     @Pyro4.expose
     def ping(self):
         return "PONG"
+
+    @Pyro4.expose
+    def check_ready(self):
+        return self.is_ready
 
     """Debug methods
     

@@ -6,7 +6,7 @@ import Pyro4.errors
 import command_resolver
 
 
-@Pyro4.behavior(instance_mode="single")
+@Pyro4.behavior(instance_mode="session")
 class ProxyServerApi:
 
     def __init__(self, tm_uri_list):
@@ -34,7 +34,7 @@ class ProxyServerApi:
         for i in range(len(self.tm_list)):
             try:
                 self.tm_list[i].ping()
-                print(self.tm_uri_list)
+                # print(self.tm_uri_list)
                 return self.tm_uri_list[i]
             except:
                 pass
@@ -64,6 +64,9 @@ class ProxyServerApi:
                     server_proxy = Pyro4.Proxy(server_uri)
                     if i == last_index_call:
                         continue
+                    check_ready_response = server_proxy.check_ready()
+                    if not check_ready_response:
+                        continue
                     server_proxy.push_command(command_data)
 
                 if command_data['action'] not in self.non_transaction_command:
@@ -85,6 +88,7 @@ class ProxyServerApi:
     def ping(self):
         return "PONG"
 
+    @Pyro4.oneway
     @Pyro4.expose
     def register_server(self, server_uri):
         self.server_api_list.append(
