@@ -240,6 +240,7 @@ class TicTacToeServer(object):
                 hash_value = hashlib.md5((hash_value + piece).encode()).hexdigest()
 
         return {
+            'is_ready': self.is_ready,
             'player_list': player_list,
             'board_state': board_state,
             'hash': hash_value,
