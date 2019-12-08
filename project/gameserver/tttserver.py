@@ -1,6 +1,7 @@
 # from project.gameserver.boardserver import Board
 import Pyro4
 import Pyro4.errors
+import hashlib
 import boardserver
 
 
@@ -225,11 +226,21 @@ class TicTacToeServer(object):
 
     @Pyro4.expose
     def verbose_server(self):
+        board_state = self.handle_update()['data']
         player_list = []
         for board in self.board_list:
             player_list.append(tuple(player for player in board.player_name_list))
 
+        hash_value = hashlib.md5("EMPTY GAME".encode()).hexdigest()
+        for players in player_list:
+            for player in players:
+                hash_value = hashlib.md5((hash_value + player).encode()).hexdigest()
+        for row in board_state:
+            for piece in row:
+                hash_value = hashlib.md5((hash_value + piece).encode()).hexdigest()
+
         return {
             'player_list': player_list,
-            'board_state': self.handle_update()['data']
+            'board_state': board_state,
+            'hash': hash_value,
         }
