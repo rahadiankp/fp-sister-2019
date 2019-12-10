@@ -11,12 +11,12 @@ class StartScene:
         self.username_rect = pygame.rect.Rect(150, 250, 350, 80)
         self.start_rect = pygame.rect.Rect(60, 380, 260, 60)
         self.spectate_rect = pygame.rect.Rect(350, 380, 260, 60)
-        self.quit_rect = pygame.rect.Rect(255, 550, 260, 60)
+        self.quit_rect = pygame.rect.Rect(225, 550, 260, 60)
         self.boxcolor = pygame.Color('black')
         self.load_resource()
 
     def load_resource(self):
-        self.resource.update({'background': (pygame.image.load("assets/background.png"), (0, 0))})
+        self.resource.update({'background': (pygame.image.load("assets/background.jpg"), (-250, -425))})
 
     def draw_screen(self):
         for item in self.resource:
@@ -44,6 +44,7 @@ class StartScene:
 
         self.screen.blit(username_fill, (self.username_rect.x, self.username_rect.y))
         self.screen.blit(start_fill, (self.start_rect.x, self.start_rect.y))
+        self.screen.blit(spectate_fill, (self.spectate_rect.x, self.spectate_rect.y))
         self.screen.blit(quit_fill, (self.quit_rect.x, self.quit_rect.y))
         
         self.screen.blit(username_surface, (self.username_rect.x + 8, self.username_rect.y + 8))
@@ -100,3 +101,5 @@ class StartScene:
         
                 self.draw_screen()
                 pygame.display.update()
+
+StartScene().start_scene()
