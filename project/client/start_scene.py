@@ -28,9 +28,9 @@ class StartScene:
         pygame.draw.rect(self.screen, self.boxcolor, self.quit_rect, 8)
 
         username_surface = pygame.font.Font(None, 64).render(self.username, True, pygame.Color('black'))
-        start_surface = pygame.font.Font(None, 64).render('PLAY', True, pygame.Color('white'))
-        spectate_surface = pygame.font.Font(None, 64).render('SPECTATE', True, pygame.Color('white'))
-        quit_surface = pygame.font.Font(None, 64).render('QUIT', True, pygame.Color('white'))
+        start_surface = pygame.font.Font(None, 64).render('     PLAY', True, pygame.Color('white'))
+        spectate_surface = pygame.font.Font(None, 64).render(' SPECTATE', True, pygame.Color('white'))
+        quit_surface = pygame.font.Font(None, 64).render('     QUIT', True, pygame.Color('white'))
 
         username_fill = pygame.Surface((350, 80))
         start_fill = pygame.Surface((260, 60))
