@@ -102,4 +102,3 @@ class StartScene:
                 self.draw_screen()
                 pygame.display.update()
 
-StartScene().start_scene()
